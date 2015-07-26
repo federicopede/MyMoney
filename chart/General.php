@@ -10,8 +10,8 @@
     <!--<script type="text/javascript" src="../../examples/shared/include-ext.js"></script>
     <script type="text/javascript" src="../../examples/shared/options-toolbar.js"></script>-->
     
-        	<script type="text/javascript" src="./ext-all.js"></script>
-	<link rel="stylesheet" type="text/css" href="./resources/css/ext-all-neptune-debug.css"/>
+        	<script type="text/javascript" src="../Resources/js/ext-all.js"></script>
+	<link rel="stylesheet" type="text/css" href="../Resources/css/ext-all-neptune-debug.css"/>
     
     <script type="text/javascript" src="./example-data.js"></script>
     <script type="text/javascript" src="General.js"></script>

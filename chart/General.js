@@ -16,7 +16,9 @@ Ext.onReady(function () {
     {
         var chartPie = Ext.create('Ext.chart.Chart', {
             xtype: 'chart',
-            animate: true,
+            region: 'center',
+             style: 'background:#fff',
+            animate: true,            
 			store: newStore,
             shadow: true,
             legend: {
@@ -64,6 +66,7 @@ Ext.onReady(function () {
 
         var barRenderer = Ext.create('Ext.chart.Chart', {
             xtype: 'chart',
+            region: 'center',
             animate: true,
             style: 'background:#fff',
             shadow: false,
@@ -125,6 +128,7 @@ Ext.onReady(function () {
     {
         var chart = Ext.create('Ext.chart.Chart', {
             xtype: 'chart',
+            region: 'center',
             style: 'background:#fff',
             animate: true,
             shadow: true,
@@ -151,6 +155,16 @@ Ext.onReady(function () {
             series: [{
                 type: 'bar',
                 axis: 'bottom',
+                label: {
+                    display: 'insideEnd',
+                    field: ['Entrate', 'Uscite'],
+                    renderer: Ext.util.Format.numberRenderer('0 Eur'),
+                    //renderer: function(storeItem, item) { return storeItem + "€"; },                                      
+                    orientation: 'horizontal',
+                    color: '#333',
+                    'text-anchor': 'middle',
+                    contrast: true
+                },                
                 xField: 'name',
                 yField: ['Entrate', 'Uscite']
             }]
@@ -376,10 +390,65 @@ Ext.onReady(function () {
          return x;      
     }
     
+    function createPanelFilters()
+    {
+        var panel = Ext.create('Ext.form.Panel', {
+            renderTo: Ext.getBody(),
+            //title: 'Form Panel',
+            region: 'north',
+            height: 70,
+            bodyStyle: 'padding:5px 5px 0',
+            //width: 600,
+            //flex: 1,
+            border: false,
+            fieldDefaults: {
+                labelAlign: 'left',
+                msgTarget: 'side'
+            },
+            defaults: {
+                border: false,
+                xtype: 'panel',
+                flex: 1,
+                layout: 'anchor'
+            },
+    
+            layout: 'hbox',
+            items: [{
+                items: [{
+                    xtype:'textfield',
+                    fieldLabel: 'First Name',
+                    anchor: '-5',
+                    name: 'first'
+                }, {
+                    xtype:'textfield',
+                    fieldLabel: 'Company',
+                    anchor: '-5',
+                    name: 'company'
+                }]
+            }, {
+                items: [{
+                    xtype:'textfield',
+                    fieldLabel: 'Last Name',
+                    anchor: '100%',
+                    name: 'last'
+                },{
+                    xtype:'textfield',
+                    fieldLabel: 'Email',
+                    anchor: '100%',
+                    name: 'email',
+                    vtype:'email'
+                }]
+            }],
+        });   
+        
+        return panel;     
+    }
+    
     function createLineChart()
     {
         var chart = Ext.create('Ext.chart.Chart', {
             xtype: 'chart',
+            region: 'center',
             style: 'background:#fff',
             animate: true,
             store: newStoreCategory,
@@ -429,40 +498,22 @@ Ext.onReady(function () {
                 createSerie('ImportoUtilita'),
                 createSerie('ImportoIstruzione'),
                 
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoAuto',             markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, tips: createTips() },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoCasa',             markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoAlimenti',         markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoSpeseMediche',     markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoViaggio',          markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoTasse',            markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoTelefonia',        markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoVestiti',          markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoAnimali',          markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoGiardinaggio',     markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoTelevisione',      markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoAltro',            markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoRateizzazioni',    markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoSvago',            markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoIntrattenimento',  markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoOggettiPersonali', markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoUtilita',          markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },
-                //{ type: 'line', highlight: { size: 7, radius: 7 }, axis: 'left', xField: 'name', yField: 'ImportoIstruzione',       markerConfig: { type: 'circle', size: 4, radius: 4, 'stroke-width': 0 }, smooth: true, fill: false },                 
-            ]
+           ]
         });
         
         return chart;        
     }
-    
-    var donut = false;
-    
+
     var lastChartUsed = createChartPie();
+    var formFilters = createPanelFilters();
     
 	window.panel1 = Ext.create('widget.panel', 
 	{
         title: 'Statistiche',
-        layout: 'fit',
+        layout: 'border',
+        border: false,
         tbar: [
-		{
+		{            
             text: 'Save Chart',
             handler: function() {
                 Ext.MessageBox.confirm('Confirm Download', 'Would you like to download the chart as an image?', function(choice){
@@ -479,9 +530,11 @@ Ext.onReady(function () {
         //     }
         }, {
             text: 'Chart Pie',
+            //scale: 'large',
             handler: function() {
                 // Put it in the exact same place as the old one, that will trigger
                 // a refresh of the layout and a render of the chart
+                window.panel1.setTitle('Statistiche Chart Pie');
                 var oldChart = window.panel1.down('chart'),
                     oldIndex = window.panel1.items.indexOf(oldChart);
                 window.panel1.remove(oldChart);
@@ -490,7 +543,9 @@ Ext.onReady(function () {
             }   
         }, {
             text: 'Chart Bar',
+            //scale: 'medium',
             handler: function() {
+                window.panel1.setTitle('Statistiche Chart Bar');
                 var oldChart = window.panel1.down('chart'),
                     oldIndex = window.panel1.items.indexOf(oldChart);
                 window.panel1.remove(oldChart);
@@ -500,6 +555,7 @@ Ext.onReady(function () {
         }, {
             text: 'Chart Line',
             handler: function() {
+                window.panel1.setTitle('Statistiche Chart Line');
                 var oldChart = window.panel1.down('chart'),
                     oldIndex = window.panel1.items.indexOf(oldChart);
                 window.panel1.remove(oldChart);
@@ -509,6 +565,7 @@ Ext.onReady(function () {
         }, {
             text: 'Month In/Out',
             handler: function() {
+                window.panel1.setTitle('Statistiche Entrate/Uscite');
                 var oldChart = window.panel1.down('chart'),
                     oldIndex = window.panel1.items.indexOf(oldChart);
                 window.panel1.remove(oldChart);
@@ -521,12 +578,12 @@ Ext.onReady(function () {
                  window.location.href = "../Index.php";
              }            
         }],
-        items: lastChartUsed
+        items: [formFilters,lastChartUsed]
     });
         
     var vp = Ext.create('Ext.container.Viewport', {
         renderTo: Ext.getBody(),
-        layout: 'fit',
+        layout: 'fit',        
         items: panel1
     });
     
