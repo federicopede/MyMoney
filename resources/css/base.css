@@ -1,0 +1,25 @@
+body
+{
+background-color:steelblue!important;
+}
+.heading {
+	color: #444499;
+	font-family: Montserrat, sans-serif, cursive;
+}
+.heading2 {
+	color: Cyan;
+	font-family: Montserrat, sans-serif, cursive;
+}
+.options {
+	font-family: Montserrat, sans-serif, cursive;
+	font-size: 16px;
+	font-style: oblique;
+	color: #444499;
+}
+
+input[readonly]
+{
+    background-color:#34495E;
+	border:none;
+	color:white;
+}
