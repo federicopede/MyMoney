@@ -33,15 +33,17 @@ Ext.onReady(function () {
                 donut: 35,
                 tips: {
                   trackMouse: true,
-                  width: 140,
-                  height: 28,
+                  width: 160,
+                  height: 56,
                   renderer: function(storeItem, item) {
                     //calculate percentage.
                     var total = 0;
                     newStore.each(function(rec) {
                         total += rec.get('data1');
                     });
-                    this.setTitle(storeItem.get('name') + ': ' + Math.round(storeItem.get('data1') / total * 100) + '%');
+                    var title = storeItem.get('name') + ': ' + Math.round(storeItem.get('data1') / total * 100) + '%';
+                    title += '<br/>Importo : ' + storeItem.get('data1').toFixed(2) + ' &#8364;';
+                    this.setTitle(title);
                   }
                 },
                 highlight: {
@@ -93,7 +95,7 @@ Ext.onReady(function () {
                 label: {
                     display: 'insideEnd',
                     field: 'data1',
-                    renderer: Ext.util.Format.numberRenderer('0 Eur'),
+                    renderer: Ext.util.Format.numberRenderer('0 &#8364;'),
                     //renderer: function(storeItem, item) { return storeItem + "€"; },                                      
                     orientation: 'horizontal',
                     color: '#333',
@@ -158,7 +160,7 @@ Ext.onReady(function () {
                 label: {
                     display: 'insideEnd',
                     field: ['Entrate', 'Uscite'],
-                    renderer: Ext.util.Format.numberRenderer('0 Eur'),
+                    renderer: Ext.util.Format.numberRenderer('0 &#8364;'),
                     //renderer: function(storeItem, item) { return storeItem + "€"; },                                      
                     orientation: 'horizontal',
                     color: '#333',
@@ -392,6 +394,7 @@ Ext.onReady(function () {
     
     function createPanelFilters()
     {
+        var filtri = document.getElementById("filtri");
         var panel = Ext.create('Ext.form.Panel', {
             renderTo: Ext.getBody(),
             //title: 'Form Panel',
@@ -416,9 +419,10 @@ Ext.onReady(function () {
             items: [{
                 items: [{
                     xtype:'textfield',
-                    fieldLabel: 'First Name',
+                    fieldLabel: 'Filtri',
                     anchor: '-5',
-                    name: 'first'
+                    name: 'first',
+                    value: filtri.value,
                 }, {
                     xtype:'textfield',
                     fieldLabel: 'Company',
