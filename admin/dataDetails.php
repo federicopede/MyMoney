@@ -79,8 +79,8 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
        $paramMese = $_REQUEST['mese'];
                
        $days = get_number_of_days_in_month($paramMese,$paramAnno);
-       $startDate = $paramAnno.'-'.$paramMese.'-01';
-       $endDate = $paramAnno.'-'.$paramMese.'-'.$days;
+       //$startDate = $paramAnno.'-'.$paramMese.'-01';
+       //$endDate = $paramAnno.'-'.$paramMese.'-'.$days;
        
         $query2 = "SELECT ID FROM Causali WHERE Descrizione = '".str_replace('Importo', '', $paramCausale)."'";
         

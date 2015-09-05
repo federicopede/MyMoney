@@ -117,15 +117,18 @@
         //$row = mysqli_fetch_row($rs_result); 
         //$DescrizioneConto = $row[0];
           
-        $rs_result = mysql_query($query,$link); 
+        $DescrizioneConto = "";
+        if ($ID_CONTO != null)
+        {
+            $rs_result = mysql_query($query,$link); 
         
-        if($rs_result === FALSE) { 
-            die(mysql_error()); // TODO: better error handling
-        }
+            if($rs_result === FALSE) { 
+                die(mysql_error()); // TODO: better error handling
+            }
 
-        $row = mysql_fetch_row($rs_result); 
-        $DescrizioneConto = $row[0];
-          
+            $row = mysql_fetch_row($rs_result); 
+            $DescrizioneConto = $row[0];
+        } 
         $filtri = "Conto: '".$DescrizioneConto."' Data iniziale: '".$startDate."' Data finale: '".$endDate."' Causale: '".$ID_CAUSALE."'";
         echo "<input type=\"hidden\" id=\"filtri\" name=\"filtri\" value=\"".$filtri."\">";       
        ?>

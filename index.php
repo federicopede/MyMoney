@@ -64,13 +64,16 @@ if(login_check($mysqli) == true) {
   	 	  $link=mysql_connect("localhost","root@localhost","") or die("Cannot Connect to the database!");
   		 	mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
     
-      	if (isset($_GET["page"])) { $page  = $_GET["page"]; } 
+        $month_start = strtotime('first day of this month', time());
+        $month_end = strtotime('last day of this month', time());    
+      	
+        if (isset($_GET["page"])) { $page  = $_GET["page"]; } 
         else if (isset($_SESSION["page"])) { $page  = $_SESSION["page"]; }
         else { $page=1; };
             
         if (isset($_GET["entries"])) { $ENTRIES  = $_GET["entries"]; } 
         else if (isset($_SESSION["entries"])) { $ENTRIES  = $_SESSION["entries"]; }
-        else { $ENTRIES=20; };
+        else { $ENTRIES=200; };
               
   		  $start_from = ($page-1) * $ENTRIES; 
         
@@ -88,13 +91,14 @@ if(login_check($mysqli) == true) {
             
         if (isset($_REQUEST["startDate"])) { $startDate  = $_REQUEST["startDate"]; } 
         else if (isset($_SESSION["startDate"])) { $startDate  = $_SESSION["startDate"]; }
-        else { $startDate=null; };
+        else { $startDate=date('Y-m-01'); };
+        
         
         
         if (isset($_REQUEST["endDate"])) { $endDate  = $_REQUEST["endDate"]; } 
         else if (isset($_SESSION["endDate"])) { $endDate  = $_SESSION["endDate"]; }
         else { $endDate=null; };
-                        
+        //echo 'ciao '.date('Y-m-d', $month_end);
         //$ID_CONTO =  $_REQUEST['Conto']; 
   
         $_SESSION["page"] = $page;
@@ -248,6 +252,7 @@ if(login_check($mysqli) == true) {
       var picker = $('#reportrange').data('daterangepicker');
       picker.setStartDate(null);
       picker.setEndDate(null);
+      
       document.form1.startDate.value =  null;
       document.form1.endDate.value =  null;
       $('#reportrange span').html('--');
@@ -319,34 +324,43 @@ for ($i=1; $i<=$total_pages; $i++) {
   
   
  
-     $ImportoIniziale =0;
+     $ImportoIniziale =0.0;
+     $TotaleSpeso = 0.0;
+     $TotaleUscito = 0.0;
+     $TotaleEntrato = 0.0;
      
       if ($ID_CONTO != null)
       {
-        //$sql = "SELECT ImportoIniziale FROM Conti WHERE ID = " .$ID_CONTO. ""; 
-		    //$rs_result = mysql_query($sql,$link); 
-        //$row = mysql_fetch_row($rs_result); 
-        //$ImportoIniziale = $row[0];
+          //$sql = "SELECT ImportoIniziale FROM Conti WHERE ID = " .$ID_CONTO. ""; 
+		      //$rs_result = mysql_query($sql,$link); 
+          //$row = mysql_fetch_row($rs_result); 
+          //$ImportoIniziale = $row[0];
         
-        $query = "SELECT COUNT(*) FROM Consolidamenti WHERE ID_CONTO = " .$ID_CONTO. " AND Data < '".$startDate."'";
-        $rs_result = mysqli_query($mysqli, $query); 
-        $row = mysqli_fetch_row($rs_result); 
-        $EsisteConsolidamentoPrecedente = $row[0];
-        $ImportoIniziale = 0;
+          //if ($ID_CONTO != null)
+              $query = "SELECT COUNT(*) FROM Consolidamenti WHERE ID_CONTO = " .$ID_CONTO. " AND Data < '".$startDate."'";
+          //else
+          //    $query = "SELECT COUNT(*) FROM Consolidamenti WHERE Data < '".$startDate."'";
+              
+          $rs_result = mysqli_query($mysqli, $query); 
+          $row = mysqli_fetch_row($rs_result); 
+          $EsisteConsolidamentoPrecedente = $row[0];
+          $ImportoIniziale = 0;
             
-        if($EsisteConsolidamentoPrecedente > 0) {
-    			$query = "SELECT ImportoSaldo FROM Consolidamenti WHERE ID_CONTO = " .$ID_CONTO. " AND Data < '".$startDate."' ORDER BY Data DESC LIMIT 1";
-          $rs_result = mysqli_query($mysqli, $query); 
-          $row = mysqli_fetch_row($rs_result); 
-          $ImportoIniziale = $row[0];
-    		} else {
-          $query = "SELECT ImportoIniziale FROM Conti WHERE ID = " .$ID_CONTO. " ";
-          //echo $query. "<br/>";
-          $rs_result = mysqli_query($mysqli, $query); 
-          $row = mysqli_fetch_row($rs_result); 
-          $ImportoIniziale = $row[0];
-    		}
-                    
+          if ($EsisteConsolidamentoPrecedente > 0) {
+            //if ($ID_CONTO != null)
+    			     $query = "SELECT ImportoSaldo FROM Consolidamenti WHERE ID_CONTO = " .$ID_CONTO. " AND Data < '".$startDate."' ORDER BY Data DESC LIMIT 1";
+            //else
+            //   $query = "SELECT ImportoSaldo FROM Consolidamenti WHERE Data < '".$startDate."' ORDER BY Data DESC LIMIT 1"; 
+            $rs_result = mysqli_query($mysqli, $query); 
+            $row = mysqli_fetch_row($rs_result); 
+            $ImportoIniziale = $row[0];
+    		  } else {
+            $query = "SELECT ImportoIniziale FROM Conti WHERE ID = " .$ID_CONTO. " ";
+            //echo $query. "<br/>";
+            $rs_result = mysqli_query($mysqli, $query); 
+            $row = mysqli_fetch_row($rs_result); 
+            $ImportoIniziale = $row[0];
+    		  }          
       }
   $tmp = $ImportoIniziale;
   ?>
@@ -401,9 +415,17 @@ for ($i=1; $i<=$total_pages; $i++) {
 while($result=mysql_fetch_array($resource))
 	{ 
     if ($result[5] == '-')
-    $tmp -= $result[6];
+    {
+      $tmp -= $result[6];
+      $TotaleSpeso -= $result[6];
+      $TotaleUscito += $result[6];
+    }
     else
-    $tmp += $result[6];
+    {
+      $tmp += $result[6];
+      $TotaleSpeso += $result[6];
+      $TotaleEntrato += $result[6];
+    }
     $phpdate = strtotime( $result[4] );
 		$mysqldate = date( 'd/m/Y', $phpdate  );
 		$imp = strval($result[5]).strval($result[6])." €";
@@ -449,9 +471,16 @@ while($result=mysql_fetch_array($resource))
         
       </p>
   <p align="center">&nbsp;
-    <b>Importo Iniziale : <?php echo strval($ImportoIniziale); ?> €<br/>
-    Importo Residuo : <?php echo strval($tmp); ?> €
-    </b>
+    <center>
+    <table>
+      <tr><td align="right">Importo Iniziale : </td><td align="right"><?php echo strval(number_format($ImportoIniziale, 2, '.', '')); ?> €</td></tr>
+    
+    <tr><td align="right">Entrate : </td><td align="right"><?php echo strval(number_format($TotaleEntrato, 2, '.', '')); ?> €</td></tr>
+    <tr><td align="right">Uscite : </td><td align="right"><?php echo strval(number_format($TotaleUscito, 2, '.', '')); ?> €</td></tr>
+    <tr><td colspan="2">-------------------------------------------------</td></tr>
+    <tr><td align="right">Importo Residuo : </td><td align="right"><?php echo strval(number_format($tmp, 2, '.', '')); ?> €</td></tr>
+    </table>
+    </center>
   </p>
   Pagine : <?php echo $pageLinks; ?>
   <br/><br/>
@@ -476,12 +505,12 @@ while($result=mysql_fetch_array($resource))
  });
  
  //$('#reportrange span').html(moment().startOf('month').format('DD, MMMM YYYY') + ' - ' + moment().endOf('month').format('DD, MMMM YYYY'));
- 
+
     $('#reportrange').daterangepicker({
         format: 'YYYY-MM-DD',
         startDate: moment().startOf('month'),
         endDate: moment().endOf('month'),
-        minDate: '2012/01/01',
+        minDate: '2015/01/01',
         maxDate: '2099/12/31',
         dateLimit: { days: 355 },
         showDropdowns: true,
@@ -517,6 +546,7 @@ while($result=mysql_fetch_array($resource))
             firstDay: 1
         }
     }, function(start, end, label) {
+        //alert('2 ' + start);
         console.log(start.toISOString(), end.toISOString(), label);
         $('#reportrange span').html(start.format('DD, MMMM YYYY') + ' - ' + end.format('DD, MMMM YYYY'));
     });
@@ -533,14 +563,20 @@ while($result=mysql_fetch_array($resource))
     
     echo "var drp = $('#reportrange').data('daterangepicker');\n";
     if ($startDate == null)
-      echo "drp.setStartDate(moment().startOf('month'));"; 
+    {      
+      echo "drp.setStartDate(moment().startOf('month'));";
+    } 
     else
       echo "drp.setStartDate('" .$startDate. "');\n";
     if ($endDate == null)
-      echo "drp.setStartDate(moment().endOf('month'));"; 
+    {
+      echo "drp.setEndDate(moment().endOf('month'));";
+    } 
     else      
       echo "drp.setEndDate('" .$endDate. "');\n";
-    //echo " alert(drp.start);\n";
+    
+    //echo " alert('startDate " .$startDate. "');\n";
+    //echo " alert('endDate " .$endDate. "');\n";
     echo "$('#reportrange span').html(drp.startDate.format('DD, MMMM YYYY') + ' - ' + drp.endDate.format('DD, MMMM YYYY'));";
     echo "});\n";
     echo "</script>\n";

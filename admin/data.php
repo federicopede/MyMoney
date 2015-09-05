@@ -80,7 +80,7 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
 $query = "select `viewmovimenti`.`Causale` AS `Causale`,sum(`viewmovimenti`.`Importo`) AS `Importo` from `moneydb`.`viewmovimenti` " .$WHERE. " group by `viewmovimenti`.`Causale` ORDER BY sum(`viewmovimenti`.`Importo`)";
 $query1 = "select COUNT(*) from `moneydb`.`viewmovimenti` " .$WHERE. " group by `viewmovimenti`.`Causale`";
       //logger('ciao');
-      //logger($query);
+      logger($query);
        
 $result = mysql_query($query);
 $totalquery = mysql_query($query1);

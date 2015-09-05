@@ -185,7 +185,7 @@ body, input, button {
 
       <div class="input-group input-group-lg">
         <span class="input-group-addon"><i class="fa fa-user"></i></span>
-        <input type="text" class="form-control" name="email" placeholder="Username or email">
+        <input type="text" class="form-control" name="email" placeholder="Username or email" value="federicopede@gmail.com">
           </div>
 
         <div class="input-group input-group-lg">

@@ -9,8 +9,8 @@ Ext.onReady(function () {
     window.newStoreInOut = Ext.create('Money.chart.storeinout', { });
     window.newStoreCategory = Ext.create('Money.chart.storecategory', { });
     window.newStore.load();
-    window.newStoreInOut.load();
-    window.newStoreCategory.load();
+    //window.newStoreInOut.load();
+    //window.newStoreCategory.load();
     
     function createChartPie()
     {

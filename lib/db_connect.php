@@ -6,4 +6,10 @@
 	$mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);
 	//$mysqli = mysqli_connect("localhost","root@localhost","","MoneyDB");
 	// Se ti stai connettendo usando il protocollo TCP/IP, invece di usare un socket UNIX, ricordati di aggiungere il parametro corrispondente al numero di porta.
+/*
+Username: admin
+Password: 55ba90e3dd792
+*/
+
 ?>
+
