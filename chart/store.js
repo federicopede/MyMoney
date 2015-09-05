@@ -20,7 +20,7 @@ Ext.define('Money.chart.store', {
       { name: 'name'},
       { name: 'data1', type: 'float'}
      ],    
-    autoLoad: true,
+    autoLoad: false,
     //pageSize: 5, // numero de registros por Grid
     proxy: {
         type: 'ajax',
@@ -35,6 +35,7 @@ Ext.define('Money.chart.store', {
             root: 'data',
             successProperty: 'success'
         },
+        extraParams: { status:"store Load"  }
         // writer: {
         //     type: 'json',
         //     root: 'data',

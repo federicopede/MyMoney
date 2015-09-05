@@ -8,7 +8,6 @@ Ext.onReady(function () {
     window.newStore = Ext.create('Money.chart.store', { });
     window.newStoreInOut = Ext.create('Money.chart.storeinout', { });
     window.newStoreCategory = Ext.create('Money.chart.storecategory', { });
-    window.newStore.load();
     //window.newStoreInOut.load();
     //window.newStoreCategory.load();
     
@@ -391,7 +390,7 @@ Ext.onReady(function () {
          
          return x;      
     }
-    
+
     function createPanelFilters()
     {
         var filtri = document.getElementById("filtri");
@@ -424,11 +423,12 @@ Ext.onReady(function () {
                     name: 'first',
                     value: filtri.value,
                 }, {
+                    id: 'cpny',
                     xtype:'textfield',
                     fieldLabel: 'Company',
                     anchor: '-5',
                     name: 'company'
-                }]
+                } ]
             }, {
                 items: [{
                     xtype:'textfield',
@@ -543,7 +543,17 @@ Ext.onReady(function () {
                     oldIndex = window.panel1.items.indexOf(oldChart);
                 window.panel1.remove(oldChart);
                 lastChartUsed = createChartPie();
-                window.panel1.insert(oldIndex, lastChartUsed);                
+                window.panel1.insert(oldIndex, lastChartUsed);    
+                var txt = Ext.getCmp('cpny').getValue();
+                window.newStore.load({
+                    params: {
+                        status: txt
+                    },
+                    callback: function(records, operation, success) {
+                        // do something after the load finishes
+                        //alert('do');
+                    },
+                });                            
             }   
         }, {
             text: 'Chart Bar',
@@ -591,6 +601,16 @@ Ext.onReady(function () {
         items: panel1
     });
     
-
-	
+    var txt = Ext.getCmp('cpny').getValue();
+    window.newStore.load({
+        params: {
+            status: txt
+        },
+        callback: function(records, operation, success) {
+            // do something after the load finishes
+            //alert('do');
+        },
+    });
+    
+    	
 });

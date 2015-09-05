@@ -72,15 +72,16 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
           $WHERE .= " AND `viewmovimenti`.DataMovimento >= '" .$startDate. "' ";
         if ($endDate != null)
           $WHERE .= " AND `viewmovimenti`.DataMovimento <= '" .$endDate. "' ";        
-          
-         //echo   $WHERE;
+     
+         logger('status:'.$_GET["status"]);
+         
          
          //$WHERE = "";  
           
 $query = "select `viewmovimenti`.`Causale` AS `Causale`,sum(`viewmovimenti`.`Importo`) AS `Importo` from `moneydb`.`viewmovimenti` " .$WHERE. " group by `viewmovimenti`.`Causale` ORDER BY sum(`viewmovimenti`.`Importo`)";
 $query1 = "select COUNT(*) from `moneydb`.`viewmovimenti` " .$WHERE. " group by `viewmovimenti`.`Causale`";
       //logger('ciao');
-      logger($query);
+      //logger($query);
        
 $result = mysql_query($query);
 $totalquery = mysql_query($query1);
