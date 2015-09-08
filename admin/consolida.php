@@ -6,7 +6,6 @@
     <script type="text/javascript" src="./ext-all.js"></script>
 	<link rel="stylesheet" type="text/css" href="./resources/css/ext-all-neptune-debug.css"/>
     
-    <script type="text/javascript" src="./example-data.js"></script>
     <script type="text/javascript" src="BarRenderer.js"></script>
     <script type="text/javascript" src="store.js"></script>
   	</head>

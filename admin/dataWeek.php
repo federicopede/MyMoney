@@ -11,8 +11,9 @@ require_once '../lib/response.php';
 //Creating User Class
 class User
 {		
-    var $mese;
+    //var $mese;
     var $anno;
+    var $settimana;
 		var $name;
 		var $ImportoAuto;
     var $ImportoCasa;
@@ -31,7 +32,8 @@ class User
     var $ImportoIntrattenimento;
     var $ImportoOggettiPersonali;
     var $ImportoUtilita;
-    var $ImportoIstruzione;  
+    var $ImportoIstruzione; 
+    var $ImportoTOTALE;  
 }
 //Make DB connection
 $link=mysql_connect("localhost","root@localhost","") or die("Cannot Connect to the database!");
@@ -72,13 +74,13 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
           $WHERE .= " AND `viewmovimenti`.DataMovimento >= '" .$startDate. "' ";
         if ($endDate != null)
           $WHERE .= " AND `viewmovimenti`.DataMovimento <= '" .$endDate. "' ";        
-          
+  
+  //,(YEARWEEK(`viewmovimenti`.`DataMovimento`,1) / 100) AS anno        
 $query = "
-
 select 
-  month(`viewmovimenti`.`DataMovimento`) AS mese
-  ,year(`viewmovimenti`.`DataMovimento`) AS anno
-  ,concat(concat(elt(month(`viewmovimenti`.`DataMovimento`),'Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'),' '),year(`viewmovimenti`.`DataMovimento`)) AS `name`
+  WEEK(`viewmovimenti`.`DataMovimento`,1) AS settimana
+  ,2015 as `anno`
+  ,WEEK(`viewmovimenti`.`DataMovimento`,1) AS `name`
   ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 1) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoAuto`
   ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 2) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoCasa`
   ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 3) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoAlimenti`
@@ -97,18 +99,13 @@ select
   ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 16) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoIntrattenimento`
   ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 17) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoOggettiPersonali`
   ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 18) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoUtilita`
-  ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 25) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoIstruzione` 
+  ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 25) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoIstruzione`
+  ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,25)) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoTOTALE`  
 from `moneydb`.`viewmovimenti`" .$WHERE. " 
-group by month(`viewmovimenti`.`DataMovimento`), year(`viewmovimenti`.`DataMovimento`)
-
+group by WEEK(`viewmovimenti`.`DataMovimento`,1)
 ";
-//select `viewmovimenti`.`Causale` AS `Causale`,sum(`viewmovimenti`.`Importo`) AS `Importo` from `moneydb`.`viewmovimenti` " .$WHERE. " group by `viewmovimenti`.`Causale` ORDER BY sum(`viewmovimenti`.`Importo`)
-$query1 = "select COUNT(*) from `moneydb`.`viewmovimenti` " .$WHERE. " group by `viewmovimenti`.`Causale`";
 
 $result = mysql_query($query);
-$totalquery = mysql_query($query1);
-$total = mysql_fetch_array($totalquery);
-$total =($total[0]);
 $query_array=array();
 $i=0;
 //Iterate all Select
@@ -117,7 +114,7 @@ while($row = mysql_fetch_array($result))
     //Create New User instance
     $user = new User();
     //Fetch User Info
-    $user->mese=$row['mese']; // Mese/Anno
+    $user->mese=$row['settimana']; // Mese/Anno
     $user->anno=$row['anno']; // Mese/Anno
     $user->name=$row['name']; // Mese/Anno
     $user->ImportoAuto=$row['ImportoAuto'];
@@ -138,7 +135,7 @@ while($row = mysql_fetch_array($result))
     $user->ImportoOggettiPersonali=$row['ImportoOggettiPersonali'];
     $user->ImportoUtilita=$row['ImportoUtilita'];
     $user->ImportoIstruzione=$row['ImportoIstruzione'];
-    
+    $user->ImportoTOTALE=$row['ImportoTOTALE'];
     //Add User to ARRAY
     $query_array[$i]=$user;
     $i++;
@@ -149,7 +146,7 @@ mysql_close($link);
 $res = new Response();
 $res->success = true;
 $res->message = "Loaded data";
-$res->total = $total;
+$res->total = $i;
 $res->data = $query_array;
 //Printing json ARRAY
 print_r($res->to_json());

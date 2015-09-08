@@ -60,8 +60,10 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
         $_SESSION["Conto"] = $ID_CONTO;
         $_SESSION["Causale"] = $ID_CAUSALE;
         
-        $_SESSION["startDate"] = $startDate;
-        $_SESSION["endDate"] = $endDate;
+        // $_SESSION["startDate"] = $startDate;
+        // $_SESSION["endDate"] = $endDate;
+        $startDate = $_GET["DataInizio"];
+        $endDate = $_GET["DataFine"];
         
         $WHERE = " WHERE 1=1 AND (`viewmovimenti`.`Segno` = '-') AND (ID_TRANSAZIONE IS NULL)";
         //if ($ID_CONTO != null)
@@ -73,8 +75,9 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
         if ($endDate != null)
           $WHERE .= " AND `viewmovimenti`.DataMovimento <= '" .$endDate. "' ";        
      
-         logger('status:'.$_GET["status"]);
-         
+         //logger('DataInizio:'.$_GET["DataInizio"]);
+         //logger('DataFine:'.$_GET["DataFine"]);
+         //logger('Causali:'.$_GET["Causali"]);
          
          //$WHERE = "";  
           

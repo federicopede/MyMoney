@@ -21,16 +21,18 @@
     <!--<script type="text/javascript" src="../../examples/shared/include-ext.js"></script>
     <script type="text/javascript" src="../../examples/shared/options-toolbar.js"></script>-->
     
-        	<script type="text/javascript" src="../Resources/js/ext-all.js"></script>
+    <script type="text/javascript" src="../Resources/js/ext-all.js"></script>
 	<link rel="stylesheet" type="text/css" href="../Resources/css/ext-all-neptune-debug.css"/>
     
-    <script type="text/javascript" src="./example-data.js"></script>
     <script type="text/javascript" src="General.js"></script>
+    <script type="text/javascript" src="../lib/Override.js"></script>
     <script type="text/javascript" src="store.js"></script>
+    <script type="text/javascript" src="storeCausali.js"></script>
+    <script type="text/javascript" src="storeConti.js"></script>
     <script type="text/javascript" src="storeinout.js"></script>
     <script type="text/javascript" src="storecategory.js"></script>
     <script type="text/javascript" src="storedetails.js"></script>
-    
+    <script type="text/javascript" src="storeweek.js"></script>
 
     <style>
         .x-tip {
@@ -129,8 +131,10 @@
             $row = mysql_fetch_row($rs_result); 
             $DescrizioneConto = $row[0];
         } 
-        $filtri = "Conto: '".$DescrizioneConto."' Data iniziale: '".$startDate."' Data finale: '".$endDate."' Causale: '".$ID_CAUSALE."'";
-        echo "<input type=\"hidden\" id=\"filtri\" name=\"filtri\" value=\"".$filtri."\">";       
+        $filtri = "Conto: '".$DescrizioneConto."' Causale: '".$ID_CAUSALE."'";
+        echo "<input type=\"hidden\" id=\"filtri\" name=\"filtri\" value=\"".$filtri."\">";   
+        echo "<input type=\"hidden\" id=\"filtroDataInizio\" name=\"filtri\" value=\"".$startDate."\">";   
+        echo "<input type=\"hidden\" id=\"filtroDataFine\" name=\"filtri\" value=\"".$endDate."\">";       
        ?>
     </body>
 </html>

@@ -90,13 +90,21 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
         
         $WHERE = " WHERE 1=1 AND (`viewmovimenti`.`Segno` = '-') AND (ID_TRANSAZIONE IS NULL)";
         
-        if ($ID_CONTO != null)
+        if ($ID_CAUSALE_MOVIMENTO != null)
           $WHERE .= " AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = " .$ID_CAUSALE_MOVIMENTO. ") ";
        
-        if ($startDate != null)
-          $WHERE .= " AND `viewmovimenti`.DataMovimento >= '" .$startDate. "' ";
-        if ($endDate != null)
-          $WHERE .= " AND `viewmovimenti`.DataMovimento <= '" .$endDate. "' ";        
+       
+      // WHERE YEAR(Date) = 2011 AND MONTH(Date) = 5
+       
+        if ($paramAnno != null)
+          $WHERE .= " AND YEAR(`viewmovimenti`.DataMovimento) = '" .$paramAnno. "' ";
+        if ($paramMese != null)
+          $WHERE .= " AND MONTH(`viewmovimenti`.DataMovimento) = '" .$paramMese. "' ";       
+                         
+        //if ($startDate != null)
+        //  $WHERE .= " AND `viewmovimenti`.DataMovimento >= '" .$startDate. "' ";
+        //if ($endDate != null)
+        //  $WHERE .= " AND `viewmovimenti`.DataMovimento <= '" .$endDate. "' ";        
        
        
 	 	   $query="SELECT 
@@ -113,7 +121,7 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
         " .$WHERE. "
         ORDER BY DataMovimento DESC, ID DESC ";
         
-        //logger($query);
+        logger($query);
         //LIMIT $start_from, " . $ENTRIES;
 //" .$WHERE. " 
 $query1 = "select COUNT(*) from `moneydb`.`viewmovimenti` " .$WHERE. "";

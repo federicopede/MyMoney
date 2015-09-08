@@ -8,8 +8,11 @@ Ext.onReady(function () {
     window.newStore = Ext.create('Money.chart.store', { });
     window.newStoreInOut = Ext.create('Money.chart.storeinout', { });
     window.newStoreCategory = Ext.create('Money.chart.storecategory', { });
+    window.newStoreWeek = Ext.create('Money.chart.storeweek', { });
     //window.newStoreInOut.load();
     //window.newStoreCategory.load();
+    window.newStoreCausali = Ext.create('Money.chart.storeCausali', {});
+    window.newStoreConti = Ext.create('Money.chart.storeConti', { });
     
     function createChartPie()
     {
@@ -289,7 +292,7 @@ Ext.onReady(function () {
         //var tp = createTips();
         var tp = createGrid(anno, mese, causale);
         Ext.create('Ext.window.Window', {
-            title: 'Dettagli',
+            title: 'Dettagli    ' + causale,
             height: 700,
             width: 1000,    
             layout: 'fit',
@@ -391,12 +394,58 @@ Ext.onReady(function () {
          return x;      
     }
 
+
     function createPanelFilters()
     {
+        
+        var filtroDataInizio = document.getElementById("filtroDataInizio");
+        var filtroDataFine = document.getElementById("filtroDataFine");
+                
+        var DateStart = Ext.create('Ext.form.DateField', {
+            id: 'FiltroDataInizio',
+            fieldLabel: 'Data Inizio',
+            format: 'Y-m-d',
+            altFormats: 'j|j/n|j/n/y|j/n/Y|j-M|j-M-y|j-M-Y',
+            editable: false,
+            anchor: '-5',
+            value: filtroDataInizio.value
+        });            
+            
+        var DateStop = Ext.create('Ext.form.DateField', {
+            id: 'FiltroDataFine',
+            fieldLabel: 'Data Fine',
+            format: 'Y-m-d',
+            altFormats: 'j|j/n|j/n/y|j/n/Y|j-M|j-M-y|j-M-Y',
+            editable: false,
+            anchor: '-5',
+            value: filtroDataFine.value
+        }); 
+        
+        var multiComboCausali = Ext.create('Ext.form.field.ComboBox', {
+            id: 'FiltroCausali',
+            fieldLabel: 'Causali',
+            multiSelect: true,
+            displayField: 'descrizione',
+            valueField: 'id',
+            anchor: '-5',
+            store: newStoreCausali,
+            queryMode: 'remote'
+        });
+        
+        var multiComboConti = Ext.create('Ext.form.field.ComboBox', {
+            fieldLabel: 'Conti',
+            multiSelect: true,
+            displayField: 'descrizione',
+            valueField: 'id',
+            anchor: '-5',
+            store: newStoreConti,
+            queryMode: 'remote'
+        });
+                
         var filtri = document.getElementById("filtri");
+
         var panel = Ext.create('Ext.form.Panel', {
             renderTo: Ext.getBody(),
-            //title: 'Form Panel',
             region: 'north',
             height: 70,
             bodyStyle: 'padding:5px 5px 0',
@@ -430,18 +479,9 @@ Ext.onReady(function () {
                     name: 'company'
                 } ]
             }, {
-                items: [{
-                    xtype:'textfield',
-                    fieldLabel: 'Last Name',
-                    anchor: '100%',
-                    name: 'last'
-                },{
-                    xtype:'textfield',
-                    fieldLabel: 'Email',
-                    anchor: '100%',
-                    name: 'email',
-                    vtype:'email'
-                }]
+                items: [multiComboCausali,multiComboConti]
+            }, {
+                items: [DateStart,DateStop]
             }],
         });   
         
@@ -450,63 +490,195 @@ Ext.onReady(function () {
     
     function createLineChart()
     {
+        
+
+     
+        
         var chart = Ext.create('Ext.chart.Chart', {
             xtype: 'chart',
-            region: 'center',
-            style: 'background:#fff',
             animate: true,
+            style: 'background:#fff',
+            shadow: false,
             store: newStoreCategory,
-            shadow: true,
-            theme: 'Category1',
             legend: {
                 position: 'right'
             },
             axes: [{
                 type: 'Numeric',
-                minimum: 0,
-                position: 'left',
+                position: 'bottom',
                 fields: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],
-                title: 'Importo',
-                minorTickSteps: 1,
-                grid: {
-                    odd: {
-                        opacity: 1,
-                        fill: '#ddd',
-                        stroke: '#bbb',
-                        'stroke-width': 0.5
+                title: false,
+                //grid: true,
+                label: {
+                    renderer: function(v) {
+                        return String(v).replace(/000000$/, 'M' + ' &#8364;');
                     }
-                }
+                },
+                roundToDecimal: false
             }, {
                 type: 'Category',
-                position: 'bottom',
+                position: 'left',
                 fields: ['name'],
-                title: 'Mese/Anno'
+                title: false
             }],
-            series: [
-                createSerie('ImportoAuto', newStoreCategory),
-                createSerie('ImportoCasa'),
-                createSerie('ImportoAlimenti'),
-                createSerie('ImportoSpeseMediche'),
-                createSerie('ImportoViaggio'),
-                createSerie('ImportoTasse'),
-                createSerie('ImportoTelefonia'),
-                createSerie('ImportoVestiti'),
-                createSerie('ImportoAnimali'),
-                createSerie('ImportoGiardinaggio'),
-                createSerie('ImportoTelevisione'),
-                createSerie('ImportoAltro'),
-                createSerie('ImportoRateizzazioni'),
-                createSerie('ImportoSvago'),
-                createSerie('ImportoIntrattenimento'),
-                createSerie('ImportoOggettiPersonali'),
-                createSerie('ImportoUtilita'),
-                createSerie('ImportoIstruzione'),
-                
-           ]
+            series: [{
+                type: 'bar',
+                axis: 'bottom',
+                gutter: 80,
+                xField: 'name',
+                yField: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],                
+                stacked: true,
+                tips: {
+                    trackMouse: true,
+                    width: 200,
+                    height: 56,
+                    // renderer: function(storeItem, item) {
+                    //     this.setTitle(String(item.value[1] / 1000000) + 'M');
+                    // }
+                    renderer: function(storeItem, item) {
+                        //calculate percentage.
+                        //debugger
+                        var total = 0;
+                        var v = storeItem.data[item.yField];
+                        // storeItem.data.each(function(rec) {
+                        //     debugger
+                        //     total += rec.get('data1');
+                        // });
+                        total = 1000;
+                        var title = storeItem.get('name');//+ ': ' + Math.round(v / total * 100) + '%';
+                        title += '<br/>' + item.yField + ' <br/> ' + v.toFixed(2) + ' &#8364;';
+                        this.setTitle(title);
+                    }                    
+                }
+            }]
         });
+                
+        // var chart = Ext.create('Ext.chart.Chart', {
+        //     xtype: 'chart',
+        //     region: 'center',
+        //     style: 'background:#fff',
+        //     animate: true,
+        //     store: newStoreCategory,
+        //     shadow: true,
+        //     theme: 'Category1',
+        //     legend: {
+        //         position: 'right'
+        //     },
+        //     axes: [{
+        //         type: 'Numeric',
+        //         minimum: 0,
+        //         position: 'left',
+        //         fields: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],
+        //         title: 'Importo',
+        //         minorTickSteps: 1,
+        //         grid: {
+        //             odd: {
+        //                 opacity: 1,
+        //                 fill: '#ddd',
+        //                 stroke: '#bbb',
+        //                 'stroke-width': 0.5
+        //             }
+        //         }
+        //     }, {
+        //         type: 'Category',
+        //         position: 'bottom',
+        //         fields: ['name'],
+        //         title: 'Mese/Anno'
+        //     }],
+        //     series: [
+        //         createSerie('ImportoAuto', newStoreCategory),
+        //         createSerie('ImportoCasa'),
+        //         createSerie('ImportoAlimenti'),
+        //         createSerie('ImportoSpeseMediche'),
+        //         createSerie('ImportoViaggio'),
+        //         createSerie('ImportoTasse'),
+        //         createSerie('ImportoTelefonia'),
+        //         createSerie('ImportoVestiti'),
+        //         createSerie('ImportoAnimali'),
+        //         createSerie('ImportoGiardinaggio'),
+        //         createSerie('ImportoTelevisione'),
+        //         createSerie('ImportoAltro'),
+        //         createSerie('ImportoRateizzazioni'),
+        //         createSerie('ImportoSvago'),
+        //         createSerie('ImportoIntrattenimento'),
+        //         createSerie('ImportoOggettiPersonali'),
+        //         createSerie('ImportoUtilita'),
+        //         createSerie('ImportoIstruzione'),
+        //         
+        //    ]
+        // });
         
         return chart;        
     }
+    
+
+    function createWeekChart()
+    {
+        
+
+     
+        
+        var chart = Ext.create('Ext.chart.Chart', {
+            xtype: 'chart',
+            animate: true,
+            style: 'background:#fff',
+            shadow: false,
+            store: newStoreWeek,
+            legend: {
+                position: 'right'
+            },
+            axes: [{
+                type: 'Numeric',
+                position: 'bottom',
+                fields: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],
+                title: false,
+                grid: true,
+                label: {
+                    renderer: function(v) {
+                        return String(v).replace(/000000$/, 'M' + ' &#8364;');
+                    }
+                },
+                roundToDecimal: false
+            }, {
+                type: 'Category',
+                position: 'left',
+                fields: ['name'],
+                title: false
+            }],
+            series: [{
+                type: 'bar',
+                axis: 'bottom',
+                gutter: 80,
+                xField: 'name',
+                yField: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],                
+                stacked: true,
+                tips: {
+                    trackMouse: true,
+                    width: 200,
+                    height: 86,
+                    // renderer: function(storeItem, item) {
+                    //     this.setTitle(String(item.value[1] / 1000000) + 'M');
+                    // }
+                    renderer: function(storeItem, item) {
+                        //calculate percentage.
+                        //debugger
+                        var total = storeItem.data["ImportoTOTALE"];
+                        var v = storeItem.data[item.yField];
+                        // storeItem.data.each(function(rec) {
+                        //     debugger
+                        //     total += rec.get('data1');
+                        // });
+                        var title = 'Settimana ' + storeItem.get('name');//+ ': ' + Math.round(v / total * 100) + '%';
+                        title += '<br/>' + item.yField + ' <br/> ' + v.toFixed(2) + ' &#8364;';
+                        title += ' <br/> TOTALE <br/> ' + total.toFixed(2) + ' &#8364;'
+                        this.setTitle(title);
+                    }                    
+                }
+            }]
+        });
+        
+        return chart;        
+    }    
 
     var lastChartUsed = createChartPie();
     var formFilters = createPanelFilters();
@@ -544,15 +716,13 @@ Ext.onReady(function () {
                 window.panel1.remove(oldChart);
                 lastChartUsed = createChartPie();
                 window.panel1.insert(oldIndex, lastChartUsed);    
-                var txt = Ext.getCmp('cpny').getValue();
                 window.newStore.load({
                     params: {
-                        status: txt
+                        DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
+                        DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
+                        Causali: Ext.getCmp('FiltroCausali').getValue(),
                     },
-                    callback: function(records, operation, success) {
-                        // do something after the load finishes
-                        //alert('do');
-                    },
+                    callback: function(records, operation, success) { },
                 });                            
             }   
         }, {
@@ -565,6 +735,14 @@ Ext.onReady(function () {
                 window.panel1.remove(oldChart);
                 lastChartUsed = createBarRenderer();
                 window.panel1.insert(oldIndex,  lastChartUsed); 
+                window.newStore.load({
+                    params: {
+                        DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
+                        DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
+                        Causali: Ext.getCmp('FiltroCausali').getValue(),
+                    },
+                    callback: function(records, operation, success) { },
+                });                 
             }    
         }, {
             text: 'Chart Line',
@@ -575,7 +753,35 @@ Ext.onReady(function () {
                 window.panel1.remove(oldChart);
                 lastChartUsed = createLineChart();
                 window.panel1.insert(oldIndex,  lastChartUsed); 
+                window.newStoreCategory.load({
+                     params: {
+                    //     DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
+                    //     DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
+                    //     Causali: Ext.getCmp('FiltroCausali').getValue(),
+                     },
+                    callback: function(records, operation, success) { },
+                });                 
             }  
+        }, {
+            text: 'Chart Week',
+            handler: function() {
+                window.panel1.setTitle('Statistiche Chart Week');
+                var oldChart = window.panel1.down('chart'),
+                    oldIndex = window.panel1.items.indexOf(oldChart);
+                window.panel1.remove(oldChart);
+                lastChartUsed = createWeekChart();
+                window.panel1.insert(oldIndex,  lastChartUsed); 
+                window.newStoreWeek.load({
+                     params: {
+                    //     DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
+                    //     DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
+                    //     Causali: Ext.getCmp('FiltroCausali').getValue(),
+                     },
+                    callback: function(records, operation, success) { },
+                });                 
+            }  
+            
+            
         }, {
             text: 'Month In/Out',
             handler: function() {
@@ -601,15 +807,13 @@ Ext.onReady(function () {
         items: panel1
     });
     
-    var txt = Ext.getCmp('cpny').getValue();
     window.newStore.load({
-        params: {
-            status: txt
-        },
-        callback: function(records, operation, success) {
-            // do something after the load finishes
-            //alert('do');
-        },
+                    params: {
+                        DataInizio: Ext.getCmp('FiltroDataInizio').getValue(),
+                        DataFine: Ext.getCmp('FiltroDataFine').getValue(),
+                        Causali: Ext.getCmp('FiltroCausali').getValue(),
+                    },
+        callback: function(records, operation, success) { },
     });
     
     	
