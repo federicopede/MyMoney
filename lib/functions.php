@@ -44,7 +44,7 @@ function get_number_of_days_in_month($month, $year) {
 	         // verifichiamo che non sia disabilitato in seguito all'esecuzione di troppi tentativi di accesso errati.
 	         if(checkbrute($user_id, $mysqli) == true) { 
 	            // Account disabilitato
-                  logger('checkbrute!!');
+                  //logger('checkbrute!!');
 	            // Invia un e-mail all'utente avvisandolo che il suo account è stato disabilitato.
 	            return false;
 	         } else {

@@ -28,6 +28,7 @@ class User
     var $ImportoTelevisione;
     var $ImportoAltro;
     var $ImportoRateizzazioni;
+    var $ImportoMutuo;
     var $ImportoSvago;
     var $ImportoIntrattenimento;
     var $ImportoOggettiPersonali;
@@ -45,18 +46,6 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
         else if (isset($_SESSION["Conto"])) { $ID_CONTO  = $_SESSION["Conto"]; }
         else { $ID_CONTO=null; };
             
-        if (isset($_REQUEST["Causale"])) { $ID_CAUSALE  = $_REQUEST["Causale"]; } 
-        else if (isset($_SESSION["Causale"])) { $ID_CAUSALE  = $_SESSION["Causale"]; }
-        else { $ID_CAUSALE=null; };
-                      
-        if (isset($_REQUEST["startDate"])) { $startDate  = $_REQUEST["startDate"]; } 
-        else if (isset($_SESSION["startDate"])) { $startDate  = $_SESSION["startDate"]; }
-        else { $startDate=null; };
-                
-        if (isset($_REQUEST["endDate"])) { $endDate  = $_REQUEST["endDate"]; } 
-        else if (isset($_SESSION["endDate"])) { $endDate  = $_SESSION["endDate"]; }
-        else { $endDate=null; };
-                        
         $_SESSION["Conto"] = $ID_CONTO;
         $_SESSION["Causale"] = $ID_CAUSALE;
         
@@ -64,12 +53,13 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
         //$_SESSION["endDate"] = $endDate;
         $startDate = $_GET["DataInizio"];
         $endDate = $_GET["DataFine"];
+        $Causali = $_GET["Causali"];
                 
         $WHERE = " WHERE 1=1 AND (`viewmovimenti`.`Segno` = '-') AND (ID_TRANSAZIONE IS NULL)";
         //if ($ID_CONTO != null)
         //  $WHERE .= " AND (`viewmovimenti`.`ID_CONTO` = " .$ID_CONTO. ") ";
-        //if ($ID_CAUSALE != null)
-        //  $WHERE .= " AND `viewmovimenti`.ID_CAUSALE_MOVIMENTO = " .$ID_CAUSALE. " ";            
+        if ($Causali != null && $Causali != "")
+          $WHERE .= " AND `viewmovimenti`.ID_CAUSALE_MOVIMENTO IN (" .$Causali. ") ";            
         if ($startDate != null)
           $WHERE .= " AND `viewmovimenti`.DataMovimento >= '" .$startDate. "' ";
         if ($endDate != null)
@@ -80,7 +70,7 @@ $query = "
 select 
   WEEK(`viewmovimenti`.`DataMovimento`,1) AS settimana
   ,2015 as `anno`
-  ,WEEK(`viewmovimenti`.`DataMovimento`,1) AS `name`
+  ,CONCAT(WEEK(`viewmovimenti`.`DataMovimento`,1), CONCAT(' dal ', DATE_FORMAT(SUBDATE(`viewmovimenti`.`DataMovimento`, WEEKDAY(`viewmovimenti`.`DataMovimento`)),'%d %b'))) AS `name`
   ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 1) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoAuto`
   ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 2) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoCasa`
   ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 3) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoAlimenti`
@@ -104,6 +94,8 @@ select
 from `moneydb`.`viewmovimenti`" .$WHERE. " 
 group by WEEK(`viewmovimenti`.`DataMovimento`,1)
 ";
+
+//logger($query);
 
 $result = mysql_query($query);
 $query_array=array();
@@ -130,6 +122,7 @@ while($row = mysql_fetch_array($result))
     $user->ImportoTelevisione=$row['ImportoTelevisione'];
     $user->ImportoAltro=$row['ImportoAltro'];
     $user->ImportoRateizzazioni=$row['ImportoRateizzazioni'];
+    $user->ImportoMutuo=$row['ImportoMutuo'];
     $user->ImportoSvago=$row['ImportoSvago'];
     $user->ImportoIntrattenimento=$row['ImportoIntrattenimento'];
     $user->ImportoOggettiPersonali=$row['ImportoOggettiPersonali'];

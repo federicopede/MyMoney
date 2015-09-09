@@ -18,7 +18,7 @@ if ($insert_stmt = $mysqli->prepare("INSERT INTO members (username, email, passw
    echo '<br/>';
    echo $random_salt;
    $insert_stmt->execute();
-   logger('inserted');
+   //logger('inserted');
 }
 
 ?>

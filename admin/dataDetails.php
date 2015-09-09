@@ -121,7 +121,7 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
         " .$WHERE. "
         ORDER BY DataMovimento DESC, ID DESC ";
         
-        logger($query);
+        //logger($query);
         //LIMIT $start_from, " . $ENTRIES;
 //" .$WHERE. " 
 $query1 = "select COUNT(*) from `moneydb`.`viewmovimenti` " .$WHERE. "";

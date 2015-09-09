@@ -131,7 +131,7 @@
             $row = mysql_fetch_row($rs_result); 
             $DescrizioneConto = $row[0];
         } 
-        $filtri = "Conto: '".$DescrizioneConto."' Causale: '".$ID_CAUSALE."'";
+        $filtri = ""; //Conto: '".$DescrizioneConto."' Causale: '".$ID_CAUSALE."'";
         echo "<input type=\"hidden\" id=\"filtri\" name=\"filtri\" value=\"".$filtri."\">";   
         echo "<input type=\"hidden\" id=\"filtroDataInizio\" name=\"filtri\" value=\"".$startDate."\">";   
         echo "<input type=\"hidden\" id=\"filtroDataFine\" name=\"filtri\" value=\"".$endDate."\">";       

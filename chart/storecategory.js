@@ -34,6 +34,7 @@ Ext.define('Money.chart.storecategory', {
       { name: 'ImportoTelevisione', type: 'float'},
       { name: 'ImportoAltro', type: 'float'},
       { name: 'ImportoRateizzazioni', type: 'float'},
+      { name: 'ImportoMutuo', type: 'float'},
       { name: 'ImportoSvago', type: 'float'},
       { name: 'ImportoIntrattenimento', type: 'float'},
       { name: 'ImportoOggettiPersonali', type: 'float'},

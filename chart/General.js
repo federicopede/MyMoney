@@ -506,7 +506,7 @@ Ext.onReady(function () {
             axes: [{
                 type: 'Numeric',
                 position: 'bottom',
-                fields: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],
+                fields: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoMutuo','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],
                 title: false,
                 //grid: true,
                 label: {
@@ -526,7 +526,7 @@ Ext.onReady(function () {
                 axis: 'bottom',
                 gutter: 80,
                 xField: 'name',
-                yField: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],                
+                yField: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoMutuo','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],                
                 stacked: true,
                 tips: {
                     trackMouse: true,
@@ -630,7 +630,7 @@ Ext.onReady(function () {
             axes: [{
                 type: 'Numeric',
                 position: 'bottom',
-                fields: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],
+                fields: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoMutuo','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],
                 title: false,
                 grid: true,
                 label: {
@@ -650,7 +650,7 @@ Ext.onReady(function () {
                 axis: 'bottom',
                 gutter: 80,
                 xField: 'name',
-                yField: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],                
+                yField: ['ImportoAuto', 'ImportoCasa', 'ImportoAlimenti','ImportoSpeseMediche','ImportoViaggio','ImportoTasse','ImportoTelefonia','ImportoVestiti','ImportoAnimali','ImportoGiardinaggio','ImportoTelevisione','ImportoAltro','ImportoRateizzazioni','ImportoMutuo','ImportoSvago','ImportoIntrattenimento','ImportoOggettiPersonali','ImportoUtilita','ImportoIstruzione'],                
                 stacked: true,
                 tips: {
                     trackMouse: true,
@@ -681,6 +681,7 @@ Ext.onReady(function () {
     }    
 
     var lastChartUsed = createChartPie();
+    var lastStoreUsed = null;
     var formFilters = createPanelFilters();
     
 	window.panel1 = Ext.create('widget.panel', 
@@ -691,22 +692,27 @@ Ext.onReady(function () {
         tbar: [
 		{            
             text: 'Save Chart',
+            scale: 'medium',
             handler: function() {
                 Ext.MessageBox.confirm('Confirm Download', 'Would you like to download the chart as an image?', function(choice){
                     if (choice == 'yes') { lastChartUsed.save( { type: 'image/png' } ); }
                 });
             }
-        // }, {
+         }, {
+             xtype:'tbseparator',
         //     enableToggle: true,
         //     pressed: false,
         //     text: 'Donut',
         //     toggleHandler: function(btn, pressed) {
         //         lastChartUsed.series.first().donut = pressed ? 35 : false;
         //         lastChartUsed.refresh();
-        //     }
         }, {
-            text: 'Chart Pie',
-            //scale: 'large',
+            //xtype: 'groupbutton',
+            enableToggle: true,
+            text: 'Pie',
+            toggleGroup: 'mygroup',
+            pressed: true,
+            scale: 'medium',
             handler: function() {
                 // Put it in the exact same place as the old one, that will trigger
                 // a refresh of the layout and a render of the chart
@@ -715,19 +721,23 @@ Ext.onReady(function () {
                     oldIndex = window.panel1.items.indexOf(oldChart);
                 window.panel1.remove(oldChart);
                 lastChartUsed = createChartPie();
-                window.panel1.insert(oldIndex, lastChartUsed);    
+                window.panel1.insert(oldIndex, lastChartUsed);   
+                lastStoreUsed = window.newStore; 
                 window.newStore.load({
                     params: {
                         DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
                         DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
-                        Causali: Ext.getCmp('FiltroCausali').getValue(),
+                        Causali: Ext.getCmp('FiltroCausali').getValue().join(','),
                     },
                     callback: function(records, operation, success) { },
                 });                            
             }   
         }, {
-            text: 'Chart Bar',
-            //scale: 'medium',
+            //xtype: 'groupbutton',
+            enableToggle: true,
+            text: 'Bar',
+            toggleGroup: 'mygroup',
+            scale: 'medium',
             handler: function() {
                 window.panel1.setTitle('Statistiche Chart Bar');
                 var oldChart = window.panel1.down('chart'),
@@ -735,17 +745,21 @@ Ext.onReady(function () {
                 window.panel1.remove(oldChart);
                 lastChartUsed = createBarRenderer();
                 window.panel1.insert(oldIndex,  lastChartUsed); 
+                lastStoreUsed = window.newStore;
                 window.newStore.load({
                     params: {
                         DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
                         DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
-                        Causali: Ext.getCmp('FiltroCausali').getValue(),
+                        Causali: Ext.getCmp('FiltroCausali').getValue().join(','),
                     },
                     callback: function(records, operation, success) { },
                 });                 
             }    
         }, {
-            text: 'Chart Line',
+            enableToggle: true,
+            text: 'Stacked Month',
+            toggleGroup: 'mygroup',
+            scale: 'medium',
             handler: function() {
                 window.panel1.setTitle('Statistiche Chart Line');
                 var oldChart = window.panel1.down('chart'),
@@ -753,29 +767,35 @@ Ext.onReady(function () {
                 window.panel1.remove(oldChart);
                 lastChartUsed = createLineChart();
                 window.panel1.insert(oldIndex,  lastChartUsed); 
+                lastStoreUsed = window.newStoreCategory;
                 window.newStoreCategory.load({
                      params: {
-                    //     DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
-                    //     DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
-                    //     Causali: Ext.getCmp('FiltroCausali').getValue(),
+                         DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
+                         DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
+                         Causali: Ext.getCmp('FiltroCausali').getValue().join(','),
                      },
                     callback: function(records, operation, success) { },
                 });                 
             }  
         }, {
-            text: 'Chart Week',
+            enableToggle: true,
+            text: 'Stacked Week',
+            toggleGroup: 'mygroup',
+            scale: 'medium',
             handler: function() {
+                debugger
                 window.panel1.setTitle('Statistiche Chart Week');
                 var oldChart = window.panel1.down('chart'),
                     oldIndex = window.panel1.items.indexOf(oldChart);
                 window.panel1.remove(oldChart);
                 lastChartUsed = createWeekChart();
                 window.panel1.insert(oldIndex,  lastChartUsed); 
+                lastStoreUsed = window.newStoreWeek;
                 window.newStoreWeek.load({
                      params: {
-                    //     DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
-                    //     DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
-                    //     Causali: Ext.getCmp('FiltroCausali').getValue(),
+                         DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
+                         DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
+                         Causali: Ext.getCmp('FiltroCausali').getValue().join(','),
                      },
                     callback: function(records, operation, success) { },
                 });                 
@@ -783,7 +803,10 @@ Ext.onReady(function () {
             
             
         }, {
+            enableToggle: true,
             text: 'Month In/Out',
+            toggleGroup: 'mygroup',
+            scale: 'medium',
             handler: function() {
                 window.panel1.setTitle('Statistiche Entrate/Uscite');
                 var oldChart = window.panel1.down('chart'),
@@ -791,10 +814,38 @@ Ext.onReady(function () {
                 window.panel1.remove(oldChart);
                 lastChartUsed = createInOutChart();
                 window.panel1.insert(oldIndex,  lastChartUsed); 
-            }                                     
+                lastStoreUsed = window.newStoreInOut;
+                window.newStoreInOut.load({
+                     params: {
+                         DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
+                         DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
+                         Causali: Ext.getCmp('FiltroCausali').getValue().join(','),
+                     },
+                    callback: function(records, operation, success) { },
+                });                  
+            }    
+         }, {
+             xtype:'tbseparator',      
+         }, {
+             text: 'Refresh',
+             scale: 'medium',
+             handler: function() {
+                if (lastStoreUsed != null)
+                {
+                    lastStoreUsed.load({
+                         params: {
+                             DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
+                             DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
+                             Causali: Ext.getCmp('FiltroCausali').getValue().join(','),
+                         },
+                        callback: function(records, operation, success) { },
+                    });
+                }                                    
+             }                                         
          }, {
              text: 'Return',
-             handler: function() {
+             scale: 'medium',
+             handler: function() { 
                  window.location.href = "../Index.php";
              }            
         }],
@@ -807,11 +858,12 @@ Ext.onReady(function () {
         items: panel1
     });
     
+    lastStoreUsed = window.newStore;
     window.newStore.load({
                     params: {
                         DataInizio: Ext.getCmp('FiltroDataInizio').getValue(),
                         DataFine: Ext.getCmp('FiltroDataFine').getValue(),
-                        Causali: Ext.getCmp('FiltroCausali').getValue(),
+                        Causali: Ext.getCmp('FiltroCausali').getValue().join(','),
                     },
         callback: function(records, operation, success) { },
     });

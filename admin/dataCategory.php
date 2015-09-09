@@ -27,6 +27,7 @@ class User
     var $ImportoTelevisione;
     var $ImportoAltro;
     var $ImportoRateizzazioni;
+    var $ImportoMutuo;
     var $ImportoSvago;
     var $ImportoIntrattenimento;
     var $ImportoOggettiPersonali;
@@ -133,6 +134,7 @@ while($row = mysql_fetch_array($result))
     $user->ImportoTelevisione=$row['ImportoTelevisione'];
     $user->ImportoAltro=$row['ImportoAltro'];
     $user->ImportoRateizzazioni=$row['ImportoRateizzazioni'];
+    $user->ImportoMutuo=$row['ImportoMutuo'];
     $user->ImportoSvago=$row['ImportoSvago'];
     $user->ImportoIntrattenimento=$row['ImportoIntrattenimento'];
     $user->ImportoOggettiPersonali=$row['ImportoOggettiPersonali'];
