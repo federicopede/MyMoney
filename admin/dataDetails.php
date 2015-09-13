@@ -50,7 +50,8 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
         $paramAnno = $_REQUEST['anno'];
         $paramMese = $_REQUEST['mese'];
         $settimana = $_REQUEST['settimana'];
-        $soloUscite = $_REQUEST['soloUscite'];
+        $Tipo = $_REQUEST['Tipo'];
+        $listaCausali = $_REQUEST['listaCausali'];
         
         $days = get_number_of_days_in_month($paramMese,$paramAnno);
         //$startDate = $paramAnno.'-'.$paramMese.'-01';
@@ -62,23 +63,25 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
         $record = mysql_fetch_array($myarray);
         $ID_CAUSALE_MOVIMENTO =($record[0]);
         
-        
-        if ($soloUscite == true)
+        $WHERE = " WHERE 1=1 AND (ID_TRANSAZIONE IS NULL) ";
+        //logger('Tipo : '.$Tipo);
+        if ($Tipo == null || $Tipo == '-1' || $Tipo == '0')
         {
-          logger('SoloUscite TRUE: '.$soloUscite);
-          $WHERE = " WHERE 1=1 AND (`viewmovimenti`.`Segno` = '+') AND (ID_TRANSAZIONE IS NULL)";
+          $WHERE .= " AND (`viewmovimenti`.`Segno` = '-')  ";
         }
         else
-        {
-          logger('SoloUscite FALSE: '.$soloUscite);
-          $WHERE = " WHERE 1=1 AND (`viewmovimenti`.`Segno` = '-') AND (ID_TRANSAZIONE IS NULL)";
+        {          
+          $WHERE .= " AND (`viewmovimenti`.`Segno` = '+')  ";
         }
         
-        logger('WHERE: '.$WHERE);
+        //logger('WHERE: '.$WHERE);
         
         if ($ID_CAUSALE_MOVIMENTO != null)
           $WHERE .= " AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = " .$ID_CAUSALE_MOVIMENTO. ") ";
-       
+        
+        if ($listaCausali != null && $listaCausali != "")
+          $WHERE .= " AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` IN (" .$listaCausali. ")) ";        
+        
        
         // WHERE YEAR(Date) = 2011 AND MONTH(Date) = 5
        

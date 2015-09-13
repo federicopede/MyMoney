@@ -61,8 +61,24 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
          //echo   $WHERE;
          
          //$WHERE = "";  
-          
-$query = "select `viewstatistichemese2`.`intMese`, `viewstatistichemese2`.`mese` as descMese, `viewstatistichemese2`.`Anno` as anno, `viewstatistichemese2`.`Entrate`, `viewstatistichemese2`.`Uscite` from `moneydb`.`viewstatistichemese2` " .$WHERE. "";// group by `viewmovimenti`.`Causale` ORDER BY sum(`viewmovimenti`.`Importo`)";
+        $Causali = $_GET["Causali"];
+        
+        $query = "select `viewstatistichemese2`.`intMese`, `viewstatistichemese2`.`mese` as descMese, `viewstatistichemese2`.`Anno` as anno, `viewstatistichemese2`.`Entrate`, `viewstatistichemese2`.`Uscite` from `moneydb`.`viewstatistichemese2` " .$WHERE. "";
+        
+        $query = "select ";
+        $query .= "    concat(concat(elt(month(`viewmovimenti`.`DataMovimento`),'Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'),' '),year(`viewmovimenti`.`DataMovimento`)) AS `Mese`";
+        $query .= "    ,month(`viewmovimenti`.`DataMovimento`) AS `intMese`";
+        $query .= "    ,year(`viewmovimenti`.`DataMovimento`) AS `anno`";
+        $query .= "    ,sum((case when (`viewmovimenti`.`Segno` = '+') then `viewmovimenti`.`Importo` else 0 end)) AS `Entrate`";
+        $query .= "    ,sum((case when (`viewmovimenti`.`Segno` = '-') then `viewmovimenti`.`Importo` else 0 end)) AS `Uscite` ";
+        $query .= "from `moneydb`.`viewmovimenti` ";
+        $query .= "where 1=1";
+        $query .= "    AND isnull(`viewmovimenti`.`ID_TRANSAZIONE`)"; 
+        if ($Causali != null && $Causali != "")
+          $query .= " AND `viewmovimenti`.ID_CAUSALE_MOVIMENTO IN (" .$Causali. ") "; 
+        $query .= "group by month(`viewmovimenti`.`DataMovimento`),year(`viewmovimenti`.`DataMovimento`)";        
+        
+        
 $query1 = "select COUNT(*) from `moneydb`.`viewstatistichemese2` " .$WHERE. "";
       //logger('ciao');
       //logger($query);

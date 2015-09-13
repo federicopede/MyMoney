@@ -1,2 +1,0 @@
-SoloUscite TRUE: false
-WHERE:  WHERE 1=1 AND (`viewmovimenti`.`Segno` = '+') AND (ID_TRANSAZIONE IS NULL)

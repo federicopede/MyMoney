@@ -152,7 +152,7 @@ Ext.onReady(function () {
     }
     
     function createInOutChart()
-    {
+    {        
         var chart = Ext.create('Ext.chart.Chart', {
             xtype: 'chart',
             region: 'center',
@@ -197,14 +197,16 @@ Ext.onReady(function () {
                 listeners:{
                     itemmousedown : function(obj) {
                         debugger
-                        var soloUscite = (obj.yField == 'Uscite');
+                        var Tipo = (obj.yField == 'Uscite') ? -1 : 1;
+                        var listaCausali = Ext.getCmp('FiltroCausali').getValue().join(',');
                         createDetails(
                             obj.storeItem.data.anno,  // anno
                             obj.storeItem.data.mese, // mese
                             null, // settimana
                             'Importo' + obj.storeItem.data['name'], // causale
-                            soloUscite,
-                            true //escludiFiltroDate
+                            Tipo,
+                            true, //escludiFiltroDate
+                            listaCausali
                         );                        
                         //alert(obj.storeItem.data['name'] + ' &' + obj.storeItem.data['data1']);
                     }
@@ -325,10 +327,10 @@ Ext.onReady(function () {
         return tip;        
     }
     
-    function createDetails(anno, mese, settimana, causale, soloUscite, escludiFiltroDate)
+    function createDetails(anno, mese, settimana, causale, Tipo, escludiFiltroDate, listaCausali)
     {
         //var tp = createTips();
-        var tp = createGrid(anno, mese, settimana, causale, soloUscite, escludiFiltroDate);
+        var tp = createGrid(anno, mese, settimana, causale, Tipo, escludiFiltroDate, listaCausali);
         Ext.create('Ext.window.Window', {
             title: 'Dettagli    ' + causale,
             height: 700,
@@ -344,7 +346,7 @@ Ext.onReady(function () {
         return val;
     }
     
-    function createGrid(anno, mese, settimana, causale, soloUscite, escludiFiltroDate)
+    function createGrid(anno, mese, settimana, causale, Tipo, escludiFiltroDate, listaCausali)
     {
         //alert(causale);
         var filtroDataInizio = document.getElementById("filtroDataInizio");
@@ -370,7 +372,8 @@ Ext.onReady(function () {
                         causale: causale,
                         dataInizio: escludiFiltroDate ? null : filtroDataInizio.value,
                         dataFine: escludiFiltroDate ? null : filtroDataFine.value,
-                        soloUscite: soloUscite
+                        Tipo: ((Tipo == null) ? 0 : Tipo),
+                        listaCausali: listaCausali
                     },
                     
                 }
@@ -473,6 +476,7 @@ Ext.onReady(function () {
             displayField: 'descrizione',
             valueField: 'id',
             anchor: '-5',
+            editable: false,
             store: newStoreCausali,
             queryMode: 'remote'
         });
@@ -483,6 +487,7 @@ Ext.onReady(function () {
             displayField: 'descrizione',
             valueField: 'id',
             anchor: '-5',
+            editable: false,
             store: newStoreConti,
             queryMode: 'remote'
         });
