@@ -69,7 +69,7 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
 $query = "
 select 
   WEEK(`viewmovimenti`.`DataMovimento`,1) AS settimana
-  ,2015 as `anno`
+  ,YEAR(`viewmovimenti`.`DataMovimento`) as `anno`
   ,CONCAT(WEEK(`viewmovimenti`.`DataMovimento`,1), CONCAT(' dal ', DATE_FORMAT(SUBDATE(`viewmovimenti`.`DataMovimento`, WEEKDAY(`viewmovimenti`.`DataMovimento`)),'%d %b'))) AS `name`
   ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 1) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoAuto`
   ,sum((case when (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 2) then `viewmovimenti`.`Importo` else 0 end)) AS `ImportoCasa`
@@ -106,7 +106,7 @@ while($row = mysql_fetch_array($result))
     //Create New User instance
     $user = new User();
     //Fetch User Info
-    $user->mese=$row['settimana']; // Mese/Anno
+    $user->settimana=$row['settimana']; // Mese/Anno
     $user->anno=$row['anno']; // Mese/Anno
     $user->name=$row['name']; // Mese/Anno
     $user->ImportoAuto=$row['ImportoAuto'];

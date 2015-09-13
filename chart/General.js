@@ -58,6 +58,18 @@ Ext.onReady(function () {
                     display: 'rotate',
                     contrast: true,
                     font: '18px Arial'
+                },
+                listeners:{
+                    itemmousedown : function(obj) {
+                        debugger
+                        createDetails(
+                            null,  // anno
+                            null, // mese
+                            null, // settimana
+                            'Importo' + obj.storeItem.data['name'] // causale
+                        );                        
+                        //alert(obj.storeItem.data['name'] + ' &' + obj.storeItem.data['data1']);
+                    }
                 }
             }]
         });
@@ -119,8 +131,19 @@ Ext.onReady(function () {
                     return Ext.apply(attr, {
                         fill: color
                     });
-                }
-                    
+                },
+                listeners:{
+                    itemmousedown : function(obj) {
+                        debugger
+                        createDetails(
+                            null,  // anno
+                            null, // mese
+                            null, // settimana
+                            'Importo' + obj.storeItem.data['name'] // causale
+                        );                        
+                        //alert(obj.storeItem.data['name'] + ' &' + obj.storeItem.data['data1']);
+                    }
+                }                    
                    
             }]
         });
@@ -170,7 +193,22 @@ Ext.onReady(function () {
                     contrast: true
                 },                
                 xField: 'name',
-                yField: ['Entrate', 'Uscite']
+                yField: ['Entrate', 'Uscite'],
+                listeners:{
+                    itemmousedown : function(obj) {
+                        debugger
+                        var soloUscite = (obj.yField == 'Uscite');
+                        createDetails(
+                            obj.storeItem.data.anno,  // anno
+                            obj.storeItem.data.mese, // mese
+                            null, // settimana
+                            'Importo' + obj.storeItem.data['name'], // causale
+                            soloUscite,
+                            true //escludiFiltroDate
+                        );                        
+                        //alert(obj.storeItem.data['name'] + ' &' + obj.storeItem.data['data1']);
+                    }
+                }                    
             }]
         });  
         
@@ -287,10 +325,10 @@ Ext.onReady(function () {
         return tip;        
     }
     
-    function createDetails(anno, mese, causale)
+    function createDetails(anno, mese, settimana, causale, soloUscite, escludiFiltroDate)
     {
         //var tp = createTips();
-        var tp = createGrid(anno, mese, causale);
+        var tp = createGrid(anno, mese, settimana, causale, soloUscite, escludiFiltroDate);
         Ext.create('Ext.window.Window', {
             title: 'Dettagli    ' + causale,
             height: 700,
@@ -306,9 +344,12 @@ Ext.onReady(function () {
         return val;
     }
     
-    function createGrid(anno, mese, causale)
+    function createGrid(anno, mese, settimana, causale, soloUscite, escludiFiltroDate)
     {
         //alert(causale);
+        var filtroDataInizio = document.getElementById("filtroDataInizio");
+        var filtroDataFine = document.getElementById("filtroDataFine");
+                
         var store = Ext.create('Money.chart.storedetails', 
             { 
                 proxy: {
@@ -325,35 +366,34 @@ Ext.onReady(function () {
                     { 
                         anno: anno,
                         mese: mese,
-                        causale: causale
+                        settimana: settimana,
+                        causale: causale,
+                        dataInizio: escludiFiltroDate ? null : filtroDataInizio.value,
+                        dataFine: escludiFiltroDate ? null : filtroDataFine.value,
+                        soloUscite: soloUscite
                     },
                     
                 }
             });
             
-        //store.load();
-        //console.log(store);
-        //console.log('creo lo store');
         // create the grid
         var grid = Ext.create('Ext.grid.Panel', {
             store: store,
+           features: [{
+                ftype: 'summary'
+            }],            
             columns: [
-                {id:'ID',header: 'ID', width: 45, sortable: true, dataIndex: 'ID'},
+                {id:'ID',header: 'ID', width: 45, sortable: true, dataIndex: 'ID', summaryType: 'count',},
                 {header: 'Conto', width: 140, sortable: true, dataIndex: 'Conto'},
                 {header: 'Data', width: 100, sortable: true, dataIndex: 'DataMovimento', renderer: render_date},
                 //{header: 'Tipo Movimento', width: 140, sortable: true, dataIndex: 'Pagamento'},
                 {header: 'Causale', width: 140, sortable: true, dataIndex: 'Causale'},
-                {header: 'Importo',align:'right',  width: 100, sortable: true, dataIndex: 'Importo', xtype: 'numbercolumn', format:'0.00'},
+                {header: 'Importo',align:'right',  width: 100, sortable: true, dataIndex: 'Importo', xtype: 'numbercolumn', format:'0.00', summaryType: 'sum',},
                 {header: 'Descrizione', flex:1, minWidth:140, sortable: true, dataIndex: 'Descrizione'},
                 {header: '<->', width: 35, sortable: true, dataIndex: 'Transazione'},
             ],
             stripeRows: true,
-            //height:600,
-            //width:2000,
-            //renderTo: 'grid-example',
-            //title:'test list'
         });  
-        //console.log('restituisco la grid');
         return grid;      
     }
     
@@ -377,8 +417,13 @@ Ext.onReady(function () {
             //tips: createTips(),
             fill: false,
             listeners: {
-                'itemclick': function(o) {
-                        createDetails(o.storeItem.data.anno, o.storeItem.data.mese, o.series.yField);
+                itemclick: function(o) {
+                        createDetails(
+                            o.storeItem.data.anno,  // anno
+                            o.storeItem.data.mese, // mese
+                            null, // settimana
+                            o.series.yField // causale
+                        );
 			            //var rec = newStoreCategory.getAt(o.index);
                         //console.log(o);
 			             //Ext.example.msg('Testing', 'You selected {0}.', rec.get('name'));
@@ -488,12 +533,8 @@ Ext.onReady(function () {
         return panel;     
     }
     
-    function createLineChart()
-    {
-        
-
-     
-        
+    function createStackedMonthChart()
+    {        
         var chart = Ext.create('Ext.chart.Chart', {
             xtype: 'chart',
             animate: true,
@@ -549,7 +590,19 @@ Ext.onReady(function () {
                         title += '<br/>' + item.yField + ' <br/> ' + v.toFixed(2) + ' &#8364;';
                         this.setTitle(title);
                     }                    
-                }
+                },
+                listeners:{
+                    itemclick : function(obj) {
+                        debugger
+                        createDetails(
+                            null,  // anno
+                            null, // mese
+                            null, // settimana
+                            obj.yField // causale
+                        );                        
+                        //alert(obj.storeItem.data['name'] + ' &' + obj.storeItem.data['data1']);
+                    }
+                }                
             }]
         });
                 
@@ -614,10 +667,6 @@ Ext.onReady(function () {
 
     function createWeekChart()
     {
-        
-
-     
-        
         var chart = Ext.create('Ext.chart.Chart', {
             xtype: 'chart',
             animate: true,
@@ -673,7 +722,19 @@ Ext.onReady(function () {
                         title += ' <br/> TOTALE <br/> ' + total.toFixed(2) + ' &#8364;'
                         this.setTitle(title);
                     }                    
-                }
+                },
+                listeners:{
+                    itemclick : function(obj) {
+                        debugger
+                        createDetails(
+                            obj.storeItem.data.anno,  // anno
+                            null, // mese
+                            obj.storeItem.data.settimana, // settimana
+                            obj.yField // causale
+                        );                        
+                        //alert(obj.storeItem.data['name'] + ' &' + obj.storeItem.data['data1']);
+                    }
+                }                  
             }]
         });
         
@@ -765,7 +826,7 @@ Ext.onReady(function () {
                 var oldChart = window.panel1.down('chart'),
                     oldIndex = window.panel1.items.indexOf(oldChart);
                 window.panel1.remove(oldChart);
-                lastChartUsed = createLineChart();
+                lastChartUsed = createStackedMonthChart();
                 window.panel1.insert(oldIndex,  lastChartUsed); 
                 lastStoreUsed = window.newStoreCategory;
                 window.newStoreCategory.load({
@@ -783,7 +844,6 @@ Ext.onReady(function () {
             toggleGroup: 'mygroup',
             scale: 'medium',
             handler: function() {
-                debugger
                 window.panel1.setTitle('Statistiche Chart Week');
                 var oldChart = window.panel1.down('chart'),
                     oldIndex = window.panel1.items.indexOf(oldChart);
@@ -817,8 +877,8 @@ Ext.onReady(function () {
                 lastStoreUsed = window.newStoreInOut;
                 window.newStoreInOut.load({
                      params: {
-                         DataInizio: Ext.getCmp('FiltroDataInizio').getSubmitValue(),
-                         DataFine: Ext.getCmp('FiltroDataFine').getSubmitValue(),
+                         DataInizio: null, //Ext.getCmp('FiltroDataInizio').getSubmitValue(),
+                         DataFine: null, //Ext.getCmp('FiltroDataFine').getSubmitValue(),
                          Causali: Ext.getCmp('FiltroCausali').getValue().join(','),
                      },
                     callback: function(records, operation, success) { },

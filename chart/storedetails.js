@@ -27,9 +27,13 @@ Ext.define('Money.chart.storedetails', {
         },
         extraParams: 
         { 
-            anno: 2015,
-            mese: 10,
-            causale: 'causaleXXX' 
+            anno: null,
+            mese: null,
+            settimana: null,
+            dataInizio: null,
+            dataFine: null,
+            causale: 'causaleXXX',
+            soloUscite: null
         },
         
     },

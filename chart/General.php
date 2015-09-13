@@ -81,6 +81,13 @@
     }
     </style>
         
+        
+ <style type="text/css" media="screen">
+        .x-grid-row-summary .x-grid-cell-inner {
+            font-weight: bold;
+            font-size: 12px;
+        }
+    </style>        
 </head>
 
  

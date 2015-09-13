@@ -1,22 +1,3 @@
-<?php
-// $link=mysql_connect("localhost","root@localhost","") or die("Cannot Connect to the database!");
-// 
-// 	 mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
-// 
-// $result = mysql_query("SELECT Causale, Importo FROM statistiche");
-// 
-// $rows = array();
-// while($r = mysql_fetch_array($result)) {
-// 	$row[0] = $r[0];
-// 	$row[1] = $r[1];
-// 	array_push($rows,$row);
-// }
-// 
-// print json_encode($rows, JSON_NUMERIC_CHECK);
-// 
-// mysql_close($link);
-?> 
-
   <?php
     include '../lib/functions.php';
 // Start the session
@@ -57,30 +38,23 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
             
             
             
-        if (isset($_REQUEST["startDate"])) { $startDate  = $_REQUEST["startDate"]; } 
-        else if (isset($_SESSION["startDate"])) { $startDate  = $_SESSION["startDate"]; }
-        else { $startDate=null; };
-        
-        
-        if (isset($_REQUEST["endDate"])) { $endDate  = $_REQUEST["endDate"]; } 
-        else if (isset($_SESSION["endDate"])) { $endDate  = $_SESSION["endDate"]; }
-        else { $endDate=null; };
-                        
         //$ID_CONTO =  $_REQUEST['Conto']; 
   
         $_SESSION["Conto"] = $ID_CONTO;
         $_SESSION["Causale"] = $ID_CAUSALE;
         
-        $_SESSION["startDate"] = $startDate;
-        $_SESSION["endDate"] = $endDate;
+        $startDate = $_REQUEST['dataInizio'];
+        $endDate = $_REQUEST['dataFine'];
         
-       $paramCausale = $_REQUEST['causale'];
-       $paramAnno = $_REQUEST['anno'];
-       $paramMese = $_REQUEST['mese'];
-               
-       $days = get_number_of_days_in_month($paramMese,$paramAnno);
-       //$startDate = $paramAnno.'-'.$paramMese.'-01';
-       //$endDate = $paramAnno.'-'.$paramMese.'-'.$days;
+        $paramCausale = $_REQUEST['causale'];
+        $paramAnno = $_REQUEST['anno'];
+        $paramMese = $_REQUEST['mese'];
+        $settimana = $_REQUEST['settimana'];
+        $soloUscite = $_REQUEST['soloUscite'];
+        
+        $days = get_number_of_days_in_month($paramMese,$paramAnno);
+        //$startDate = $paramAnno.'-'.$paramMese.'-01';
+        //$endDate = $paramAnno.'-'.$paramMese.'-'.$days;
        
         $query2 = "SELECT ID FROM Causali WHERE Descrizione = '".str_replace('Importo', '', $paramCausale)."'";
         
@@ -88,24 +62,47 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
         $record = mysql_fetch_array($myarray);
         $ID_CAUSALE_MOVIMENTO =($record[0]);
         
-        $WHERE = " WHERE 1=1 AND (`viewmovimenti`.`Segno` = '-') AND (ID_TRANSAZIONE IS NULL)";
+        
+        if ($soloUscite == true)
+        {
+          logger('SoloUscite TRUE: '.$soloUscite);
+          $WHERE = " WHERE 1=1 AND (`viewmovimenti`.`Segno` = '+') AND (ID_TRANSAZIONE IS NULL)";
+        }
+        else
+        {
+          logger('SoloUscite FALSE: '.$soloUscite);
+          $WHERE = " WHERE 1=1 AND (`viewmovimenti`.`Segno` = '-') AND (ID_TRANSAZIONE IS NULL)";
+        }
+        
+        logger('WHERE: '.$WHERE);
         
         if ($ID_CAUSALE_MOVIMENTO != null)
           $WHERE .= " AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = " .$ID_CAUSALE_MOVIMENTO. ") ";
        
        
-      // WHERE YEAR(Date) = 2011 AND MONTH(Date) = 5
+        // WHERE YEAR(Date) = 2011 AND MONTH(Date) = 5
        
         if ($paramAnno != null)
-          $WHERE .= " AND YEAR(`viewmovimenti`.DataMovimento) = '" .$paramAnno. "' ";
+          $WHERE .= " AND YEAR(`viewmovimenti`.DataMovimento) = " .$paramAnno. " ";
         if ($paramMese != null)
-          $WHERE .= " AND MONTH(`viewmovimenti`.DataMovimento) = '" .$paramMese. "' ";       
+          $WHERE .= " AND MONTH(`viewmovimenti`.DataMovimento) = " .$paramMese. " ";
+        if ($settimana != null)
+          $WHERE .= " AND WEEK(`viewmovimenti`.DataMovimento, 1) = " .$settimana. " ";
+        //if ($paramMese != null)
+        //  $WHERE .= " AND MONTH(`viewmovimenti`.DataMovimento) = '" .$paramMese. "' ";       
                          
-        //if ($startDate != null)
-        //  $WHERE .= " AND `viewmovimenti`.DataMovimento >= '" .$startDate. "' ";
-        //if ($endDate != null)
-        //  $WHERE .= " AND `viewmovimenti`.DataMovimento <= '" .$endDate. "' ";        
-       
+        if ($startDate != null)
+          $WHERE .= " AND `viewmovimenti`.DataMovimento >= '" .$startDate. "' ";
+        if ($endDate != null)
+          $WHERE .= " AND `viewmovimenti`.DataMovimento <= '" .$endDate. "' ";        
+       /*
+                               anno: anno,
+                        mese: mese,
+                        settimana: settimana,
+                        causale: causale,
+                        dataInizio: dataInizio,
+                        dataFine: dataFine
+       */
        
 	 	   $query="SELECT 
           `ID` 
@@ -121,6 +118,7 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
         " .$WHERE. "
         ORDER BY DataMovimento DESC, ID DESC ";
         
+        //logger('SoloUscite: '.(($soloUscite != null) and ($soloUscite)));
         //logger($query);
         //LIMIT $start_from, " . $ENTRIES;
 //" .$WHERE. " 

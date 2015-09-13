@@ -6,6 +6,8 @@ Ext.define('Money.chart.storeinout', {
       { name: 'name'},
       { name: 'Entrate', type: 'float'},
       { name: 'Uscite', type: 'float'},
+      { name: 'anno', type: 'int'},
+      { name: 'mese', type: 'int'},
      ],    
     autoLoad: true,
     //pageSize: 5, // numero de registros por Grid

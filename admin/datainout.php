@@ -15,6 +15,8 @@ class User
 		var $name;
 		var $Entrate;
     var $Uscite;
+    var $mese;
+    var $anno;
 }
 //Make DB connection
 $link=mysql_connect("localhost","root@localhost","") or die("Cannot Connect to the database!");
@@ -60,7 +62,7 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
          
          //$WHERE = "";  
           
-$query = "select `viewstatistichemese2`.`Mese`, `viewstatistichemese2`.`Entrate`, `viewstatistichemese2`.`Uscite` from `moneydb`.`viewstatistichemese2` " .$WHERE. "";// group by `viewmovimenti`.`Causale` ORDER BY sum(`viewmovimenti`.`Importo`)";
+$query = "select `viewstatistichemese2`.`intMese`, `viewstatistichemese2`.`mese` as descMese, `viewstatistichemese2`.`Anno` as anno, `viewstatistichemese2`.`Entrate`, `viewstatistichemese2`.`Uscite` from `moneydb`.`viewstatistichemese2` " .$WHERE. "";// group by `viewmovimenti`.`Causale` ORDER BY sum(`viewmovimenti`.`Importo`)";
 $query1 = "select COUNT(*) from `moneydb`.`viewstatistichemese2` " .$WHERE. "";
       //logger('ciao');
       //logger($query);
@@ -77,10 +79,11 @@ while($row = mysql_fetch_array($result))
     //Create New User instance
     $user = new User();
     //Fetch User Info
-    $user->name=$row['Mese'];
+    $user->name=$row['descMese'];
     $user->Entrate=$row['Entrate'];
 	  $user->Uscite=$row['Uscite'];
-    
+    $user->mese=$row['intMese'];
+    $user->anno=$row['anno'];
     //Add User to ARRAY
     $query_array[$i]=$user;
     $i++;
