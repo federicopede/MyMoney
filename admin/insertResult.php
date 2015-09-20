@@ -1,3 +1,12 @@
+<?php
+// Inserisci in questo punto il codice per la connessione al DB e l'utilizzo delle varie funzioni.
+include '../lib/db_connect.php';
+include '../lib/functions.php';
+sec_session_start();
+//if(login_check($mysqli) == true) {
+ 
+   // Inserisci qui il contenuto delle tue pagine!
+ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -25,6 +34,8 @@
 	 $Importo=$_REQUEST['Importo']; 
 	 $Descrizione=$_REQUEST['Descrizione']; 
 	 
+
+	 
 	 $format = 'd/m/Y';
 	 $mysqldate = DateTime::createFromFormat($format, $Data);
 	 $sqldate = $mysqldate->format('Y-m-d');
@@ -39,7 +50,13 @@
 		  {die ("Si è verificato un errore nel salvataggio della spesa, Riprova!");}
 		  else
 		 {
-		  echo "Spesa inserita correttamente!";}
+		  	$_SESSION["LAST_ID_CONTO"] = $ID_CONTO;
+	 		$_SESSION["LAST_ID_CAUSALE"] = $ID_CAUSALE;
+	 		$_SESSION["LAST_ID_TIPO_MOVIMENTO"] = $ID_TIPO_MOVIMENTO;
+	 		$_SESSION["LAST_DATA"] = $sqldate;
+		  	echo "Spesa inserita correttamente!";
+		  
+		  }
 	 ?>
 
       </p>

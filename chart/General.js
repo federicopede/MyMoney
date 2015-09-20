@@ -342,16 +342,14 @@ Ext.onReady(function () {
 
     function render_date(val) {
         debugger
-        val = Ext.util.Format.date(val, 'm/d/Y');
+        val = Ext.util.Format.date(val, 'd/m/Y');
         return val;
     }
     
     function createGrid(anno, mese, settimana, causale, Tipo, escludiFiltroDate, listaCausali)
     {
         //alert(causale);
-        var filtroDataInizio = document.getElementById("filtroDataInizio");
-        var filtroDataFine = document.getElementById("filtroDataFine");
-                
+                                       
         var store = Ext.create('Money.chart.storedetails', 
             { 
                 proxy: {
@@ -370,8 +368,8 @@ Ext.onReady(function () {
                         mese: mese,
                         settimana: settimana,
                         causale: causale,
-                        dataInizio: escludiFiltroDate ? null : filtroDataInizio.value,
-                        dataFine: escludiFiltroDate ? null : filtroDataFine.value,
+                        dataInizio: escludiFiltroDate ? null : Ext.getCmp('FiltroDataInizio').getSubmitValue(),
+                        dataFine: escludiFiltroDate ? null : Ext.getCmp('FiltroDataFine').getSubmitValue(),
                         Tipo: ((Tipo == null) ? 0 : Tipo),
                         listaCausali: listaCausali
                     },

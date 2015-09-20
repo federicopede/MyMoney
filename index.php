@@ -16,6 +16,8 @@ if(login_check($mysqli) == true) {
 <title>Welcome to Student Information Center:: Institute of Computing, BZU</title>
 <link type="text/css" rel="stylesheet" href="./resources/css/base.css">
 <link type="text/css" rel="stylesheet" href="./resources/css/table.css">
+<link type="text/css" rel="stylesheet" href="./resources/css/enriched.css">
+
 <link type="text/css" rel="stylesheet" href="./resources/css/fixedTable.css">
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -77,6 +79,11 @@ if(login_check($mysqli) == true) {
               
   		  $start_from = ($page-1) * $ENTRIES; 
         
+        if (isset($_GET["filtroDescrizione"])) { $filtroDescrizione  = $_GET["filtroDescrizione"]; } 
+        else if (isset($_SESSION["filtroDescrizione"])) { $filtroDescrizione  = $_SESSION["filtroDescrizione"]; }
+        else { $filtroDescrizione=""; };        
+        
+        
         if (isset($_REQUEST["Conto"])) { $ID_CONTO  = $_REQUEST["Conto"]; } 
         else if (isset($_SESSION["Conto"])) { $ID_CONTO  = $_SESSION["Conto"]; }
         else { $ID_CONTO=null; };
@@ -103,6 +110,7 @@ if(login_check($mysqli) == true) {
   
         $_SESSION["page"] = $page;
         $_SESSION["entries"] = $ENTRIES;
+        $_SESSION["filtroDescrizione"] = $filtroDescrizione;
         $_SESSION["Conto"] = $ID_CONTO;
         $_SESSION["Causale"] = $ID_CAUSALE;
         $_SESSION["Segno"] = $Segno;
@@ -127,9 +135,12 @@ if(login_check($mysqli) == true) {
           $WHERE .= " AND Segno = '" .$Segno. "' AND ID_TRANSAZIONE IS NULL";                    
         if ($startDate != null)
           $WHERE .= " AND DataMovimento >= '" .$startDate. "' ";
-        if ($endDate != null)
-          $WHERE .= " AND DataMovimento <= '" .$endDate. "' ";        
+        if ($endDate != null)        
+          $WHERE .= " AND DataMovimento <= '" .$endDate. "' ";
           
+        if ($filtroDescrizione != null && $filtroDescrizione != "")
+          $WHERE .= " AND Descrizione like '%" .$filtroDescrizione. "%' ";                  
+
           //echo   $WHERE;            
       ?>
 
@@ -154,20 +165,29 @@ if(login_check($mysqli) == true) {
       <input type="hidden" name="startDate" value="" />
       <input type="hidden" name="endDate" value="" />
 
-<table>
+
+    <!--<tr>
+      <td></td>-->
+  
+  
+<table class="TableDueColonne">
+  <tbody>
 <tr>
-    <td> Record :&nbsp; </td>
-    <td>
-      <select name="entries" aria-controls="example" class="">
-        <option value="10" <?php if ($ENTRIES == 10) { echo "selected='selected'";} else {echo "";}; ?>>10</option>
-        <option value="25" <?php if ($ENTRIES == 25) { echo "selected='selected'";} else {echo "";}; ?>>25</option>
-        <option value="50" <?php if ($ENTRIES == 50) { echo "selected='selected'";} else {echo "";}; ?>>50</option>
-        <option value="100" <?php if ($ENTRIES == 100) { echo "selected='selected'";} else {echo "";}; ?>>100</option>
-        <option value="200" <?php if ($ENTRIES == 200) { echo "selected='selected'";} else {echo "";}; ?>>200</option>
-      </select> 
-    </label>
+  <td>
+     Record :&nbsp; 
     </td>
-  <tr/>
+    
+    <td>
+      
+              <select name="entries" aria-controls="example" class="">
+          <option value="10" <?php if ($ENTRIES == 10) { echo "selected='selected'";} else {echo "";}; ?>>10</option>
+          <option value="25" <?php if ($ENTRIES == 25) { echo "selected='selected'";} else {echo "";}; ?>>25</option>
+          <option value="50" <?php if ($ENTRIES == 50) { echo "selected='selected'";} else {echo "";}; ?>>50</option>
+          <option value="100" <?php if ($ENTRIES == 100) { echo "selected='selected'";} else {echo "";}; ?>>100</option>
+          <option value="200" <?php if ($ENTRIES == 200) { echo "selected='selected'";} else {echo "";}; ?>>200</option>
+        </select> 
+      </td>
+  </tr>
   
   <tr>
     <td> Conto :&nbsp;</td> 
@@ -176,7 +196,7 @@ if(login_check($mysqli) == true) {
        $query="SELECT ID, Nome FROM Conti";
         		
                   $rs = mysql_query($query) or die(mysql_error());
-                  echo "<select  name=\"Conto\">  onchange=\"javascript:submitform();\"";
+                  echo "<select class=\"\"  name=\"Conto\">  onchange=\"javascript:submitform();\"";
                   echo "<option value=''>TUTTI</option>";
                   while($row = mysql_fetch_array($rs))
                   {
@@ -193,7 +213,7 @@ if(login_check($mysqli) == true) {
    </tr>
   <tr>
     <td>
-      Causale
+      Causale :&nbsp;
     </td>
     <td>
  <?php 
@@ -233,6 +253,24 @@ if(login_check($mysqli) == true) {
     
 </td>
 </tr>
+
+
+    <tr>
+      <td> Descrizione :&nbsp; </td>
+      <td>
+        <?php
+                 if ($filtroDescrizione != null)
+                    echo "<input name='filtroDescrizione' type='text' class='' id='filtroDescrizione' value='".$filtroDescrizione."' />";
+                    else
+                    echo "<input name='filtroDescrizione' type='text' class='' id='filtroDescrizione' value='' />";
+             ?>             
+        
+         
+    </td>
+  <tr/>
+  
+  
+</tbody>
 </table>
   
   

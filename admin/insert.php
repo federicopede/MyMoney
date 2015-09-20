@@ -1,3 +1,13 @@
+<?php
+// Inserisci in questo punto il codice per la connessione al DB e l'utilizzo delle varie funzioni.
+include '../lib/db_connect.php';
+include '../lib/functions.php';
+sec_session_start();
+//if(login_check($mysqli) == true) {
+ 
+   // Inserisci qui il contenuto delle tue pagine!
+ ?>
+ 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -14,10 +24,32 @@
   $(function() {    
     $.datepicker.setDefaults($.datepicker.regional['it']);
     $("#datepicker").datepicker();
-    $('#datepicker').datepicker('setDate', new Date());
+    //$('#datepicker').datepicker('setDate', new Date());
     $(".numeric").numeric({ decimal : ".",  negative : false, scale: 2 });
   });
   </script>
+  
+  <?php
+    echo "<script>\n";
+    echo "$(function() {  \n";
+    //logger('xxx'.$_SESSION["LAST_DATA"]);
+    if ($_SESSION["LAST_DATA"] == null)
+    {
+      echo "$('#datepicker').datepicker('setDate', new Date());";
+    } 
+    else      
+    {
+      $format = 'Y-m-d';
+      $mysqldate = DateTime::createFromFormat($format, $_SESSION["LAST_DATA"]);
+      $sqldate = $mysqldate->format('d/m/Y');
+      //logger('xxx'.$sqldate);
+      echo "$('#datepicker').datepicker('setDate', '".$sqldate."');\n";
+    }
+    echo " });\n";
+    echo "</script>\n";
+  ?>
+  
+    
 </head>
 
 <body >
@@ -36,6 +68,11 @@
       Segno
       Importo
       Descrizione
+      
+		  	$_SESSION["LAST_ID_CONTO"] = $ID_CONTO;
+	 		$_SESSION["LAST_ID_CAUSALE"] = $ID_CAUSALE;
+	 		$_SESSION["LAST_ID_TIPO_MOVIMENTO"] = $ID_TIPO_MOVIMENTO;
+	 		$_SESSION["LAST_DATA"] = $Data;      
     -->
   <?php 
     $link=mysql_connect("localhost","root@localhost","") or die("Cannot Connect to the database!");
@@ -58,8 +95,13 @@
                   $rs = mysql_query($query) or die(mysql_error());
                   echo "<select name=\"Conto\">";
                   while($row = mysql_fetch_array($rs)){
+                    
+                    if ($_SESSION["LAST_ID_CONTO"] != $row["ID"])
                     echo "<option value='".$row["ID"]."'>".$row["Nome"]."</option>";
-                    }mysql_free_result($rs);
+                    else
+                    echo "<option selected='selected' value='".$row["ID"]."'>".$row["Nome"]."</option>";
+                    }
+                    mysql_free_result($rs);
                   echo "</select>"; 
 	                ?>
             </td> 
@@ -67,7 +109,8 @@
           <tr>
             <td width="160" align="right"><strong>Data:&nbsp;&nbsp;</strong></td>
             <td width="152"><label>
-              <input type="text" name="Data" id="datepicker">
+              
+              <input type="text" name="Data" id="datepicker" >
             </label></td>
           </tr>
           <tr>
@@ -79,7 +122,13 @@
                   $rs = mysql_query($query) or die(mysql_error());
                   echo "<select name=\"Causale\">";
                   while($row = mysql_fetch_array($rs)){
+                    
+                    if ($_SESSION["LAST_ID_CAUSALE"] != $row["ID"])
                     echo "<option value='".$row["ID"]."'>".$row["Descrizione"]."</option>";
+                    else
+                    echo "<option selected='selected' value='".$row["ID"]."'>".$row["Descrizione"]."</option>";
+                                        
+                    //echo "<option value='".$row["ID"]."'>".$row["Descrizione"]."</option>";
                     }mysql_free_result($rs);
                   echo "</select>"; 
 	                ?>
@@ -94,7 +143,13 @@
                   $rs = mysql_query($query) or die(mysql_error());
                   echo "<select name=\"TipoMovimento\">";
                   while($row = mysql_fetch_array($rs)){
+                    
+                    if ($_SESSION["LAST_ID_TIPO_MOVIMENTO"] != $row["ID"])
                     echo "<option value='".$row["ID"]."'>".$row["Descrizione"]."</option>";
+                    else
+                    echo "<option selected='selected' value='".$row["ID"]."'>".$row["Descrizione"]."</option>";
+                                           
+                    //echo "<option value='".$row["ID"]."'>".$row["Descrizione"]."</option>";
                     }mysql_free_result($rs);
                   echo "</select>"; 
 	                ?>

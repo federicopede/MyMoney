@@ -23,3 +23,42 @@ input[readonly]
 	border:none;
 	color:white;
 }
+
+
+table.TableDueColonne {
+    border-collapse: separate; /* allow spacing between cell borders */
+    border-spacing: 0 5px; /* syntax is <vertical value> <horizontal value> */
+}
+
+table.TableDueColonne tbody tr {
+	height:26px;
+}
+
+table.TableDueColonne tbody tr td:first-of-type {
+	width: 120px;
+	text-align: right;
+	padding-right: 5px;
+}
+
+table.TableDueColonne tbody tr td {
+	color:#294884;
+}
+
+table.TableDueColonne tbody tr.headerRow td {
+	color:#00005b;
+	font-weight:bold;
+}
+
+table.TableDueColonne tbody tr td input,
+table.TableDueColonne tbody tr td textarea 
+{
+	/*width:100%;	*/
+	/*text-align:left;*/
+	color:#294884;
+}
+
+table.TableDueColonne tbody tr td input[type=checkbox]{
+	width: auto;
+	/*text-align:left;*/
+}
+

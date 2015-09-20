@@ -1,3 +1,12 @@
+<?php
+// Inserisci in questo punto il codice per la connessione al DB e l'utilizzo delle varie funzioni.
+include '../lib/db_connect.php';
+include '../lib/functions.php';
+sec_session_start();
+//if(login_check($mysqli) == true) {
+ 
+   // Inserisci qui il contenuto delle tue pagine!
+ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -17,7 +26,6 @@
     <td><h1 align="center" class="heading2">Modifica Spesa</h1>
   <p align="center">
     <?php 
-		include '../lib/functions.php';
 		
 		$id=$_REQUEST['id']; 
 	 $ID_CONTO=$_REQUEST['Conto']; 
@@ -35,8 +43,10 @@
 	 $link=mysql_connect("localhost","root@localhost","") or die("Cannot Connect to the database!");
 	
 	 mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
-	 $query="UPDATE Movimenti SET ID_CONTO='".$ID_CONTO."', DataMovimento='".$sqldate."', ID_CAUSALE_MOVIMENTO='".$ID_CAUSALE."', ID_TIPO_MOVIMENTO='".$ID_TIPO_MOVIMENTO."', Segno='".$Segno."', Importo='".$Importo."', Descrizione='".$Descrizione."' WHERE id='".$id."'";
-	//echo 	$query;
+	 //$query="UPDATE Movimenti SET ID_CONTO='".$ID_CONTO."', DataMovimento='".$sqldate."', ID_CAUSALE_MOVIMENTO='".$ID_CAUSALE."', ID_TIPO_MOVIMENTO='".$ID_TIPO_MOVIMENTO."', Segno='".$Segno."', Importo='".$Importo."', Descrizione='".$Descrizione."' WHERE id='".$id."'";
+	 // ID_CONTO e Segno non li metto perchè disabilitati, se sono disabilitati nnìon vengono passati dalla form
+	 $query="UPDATE Movimenti SET DataMovimento='".$sqldate."', ID_CAUSALE_MOVIMENTO='".$ID_CAUSALE."', ID_TIPO_MOVIMENTO='".$ID_TIPO_MOVIMENTO."', Importo='".$Importo."', Descrizione='".$Descrizione."' WHERE id='".$id."'";
+	logger($query);
 		  if(!mysql_query($query,$link))
 		  {die ("An unexpected error occured while saving the record, Please try again!");}
 		  else

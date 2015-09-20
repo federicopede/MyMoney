@@ -43,8 +43,10 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
         $_SESSION["Conto"] = $ID_CONTO;
         $_SESSION["Causale"] = $ID_CAUSALE;
         
-        $startDate = $_REQUEST['dataInizio'];
-        $endDate = $_REQUEST['dataFine'];
+        //$startDate = $_REQUEST['dataInizio'];
+        //$endDate = $_REQUEST['dataFine'];
+        $startDate = $_GET["dataInizio"];
+        $endDate = $_GET["dataFine"];
         
         $paramCausale = $_REQUEST['causale'];
         $paramAnno = $_REQUEST['anno'];
@@ -127,7 +129,7 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
 //" .$WHERE. " 
 $query1 = "select COUNT(*) from `moneydb`.`viewmovimenti` " .$WHERE. "";
       //logger('ciao details');
-      //logger($query);
+      logger($query);
        
 $result = mysql_query($query);
 $totalquery = mysql_query($query1);
