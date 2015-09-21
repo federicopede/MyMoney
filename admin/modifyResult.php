@@ -46,7 +46,7 @@ sec_session_start();
 	 //$query="UPDATE Movimenti SET ID_CONTO='".$ID_CONTO."', DataMovimento='".$sqldate."', ID_CAUSALE_MOVIMENTO='".$ID_CAUSALE."', ID_TIPO_MOVIMENTO='".$ID_TIPO_MOVIMENTO."', Segno='".$Segno."', Importo='".$Importo."', Descrizione='".$Descrizione."' WHERE id='".$id."'";
 	 // ID_CONTO e Segno non li metto perchè disabilitati, se sono disabilitati nnìon vengono passati dalla form
 	 $query="UPDATE Movimenti SET DataMovimento='".$sqldate."', ID_CAUSALE_MOVIMENTO='".$ID_CAUSALE."', ID_TIPO_MOVIMENTO='".$ID_TIPO_MOVIMENTO."', Importo='".$Importo."', Descrizione='".$Descrizione."' WHERE id='".$id."'";
-	logger($query);
+	//logger($query);
 		  if(!mysql_query($query,$link))
 		  {die ("An unexpected error occured while saving the record, Please try again!");}
 		  else

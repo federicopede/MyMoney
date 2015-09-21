@@ -331,12 +331,20 @@ Ext.onReady(function () {
     {
         //var tp = createTips();
         var tp = createGrid(anno, mese, settimana, causale, Tipo, escludiFiltroDate, listaCausali);
-        Ext.create('Ext.window.Window', {
+        var win = Ext.create('Ext.window.Window', {
             title: 'Dettagli    ' + causale,
             height: 700,
             width: 1000,    
             layout: 'fit',
-            items:[tp]
+            items:[tp],
+            buttons     : [
+                        {
+                            text    : 'OK',
+                            handler : function() {
+                                win.close();
+                            }
+                        }
+                    ]            
         }).show();
     }
 

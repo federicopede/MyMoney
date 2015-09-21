@@ -1,10 +1,3 @@
-UPDATE Movimenti SET DataMovimento='2015-09-14', ID_CAUSALE_MOVIMENTO='13', ID_TIPO_MOVIMENTO='6', Importo='46.25', Descrizione='AKF Bank Bimby' WHERE id='680'
-UPDATE Movimenti SET DataMovimento='2015-09-14', ID_CAUSALE_MOVIMENTO='13', ID_TIPO_MOVIMENTO='6', Importo='46.25', Descrizione='AKF Bank Bimby2' WHERE id='680'
-UPDATE Movimenti SET DataMovimento='2015-09-14', ID_CAUSALE_MOVIMENTO='13', ID_TIPO_MOVIMENTO='6', Importo='46.25', Descrizione='AKF Bank Bimby' WHERE id='680'
-UPDATE Movimenti SET DataMovimento='2015-06-19', ID_CAUSALE_MOVIMENTO='15', ID_TIPO_MOVIMENTO='3', Importo='3.25', Descrizione='iTunes' WHERE id='463'
-UPDATE Movimenti SET DataMovimento='2015-06-21', ID_CAUSALE_MOVIMENTO='7', ID_TIPO_MOVIMENTO='3', Importo='20.00', Descrizione='Ricarica Vodafone' WHERE id='464'
-UPDATE Movimenti SET DataMovimento='2015-07-25', ID_CAUSALE_MOVIMENTO='2', ID_TIPO_MOVIMENTO='1', Importo='5.90', Descrizione='Scritta Rebecca Langhirano notte bianca' WHERE id='478'
-UPDATE Movimenti SET DataMovimento='2015-07-31', ID_CAUSALE_MOVIMENTO='1', ID_TIPO_MOVIMENTO='1', Importo='120.00', Descrizione='Cambio Batteria GOLF Grossi' WHERE id='502'
 SELECT 
           `ID` 
           ,`Conto`
@@ -16,7 +9,7 @@ SELECT
           ,`Transazione` 
           ,`Consolidato` 
         FROM viewmovimenti 
-         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` IN (1))  AND YEAR(`viewmovimenti`.DataMovimento) = 2015  AND MONTH(`viewmovimenti`.DataMovimento) = 9 
+         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 2)  AND `viewmovimenti`.DataMovimento >= '2015-06-01'  AND `viewmovimenti`.DataMovimento <= '2015-12-31' 
         ORDER BY DataMovimento DESC, ID DESC 
 SELECT 
           `ID` 
@@ -29,7 +22,7 @@ SELECT
           ,`Transazione` 
           ,`Consolidato` 
         FROM viewmovimenti 
-         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` IN (1))  AND YEAR(`viewmovimenti`.DataMovimento) = 2015  AND MONTH(`viewmovimenti`.DataMovimento) = 5 
+         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 14)  AND `viewmovimenti`.DataMovimento >= '2015-05-01'  AND `viewmovimenti`.DataMovimento <= '2015-09-30' 
         ORDER BY DataMovimento DESC, ID DESC 
 SELECT 
           `ID` 
@@ -42,7 +35,7 @@ SELECT
           ,`Transazione` 
           ,`Consolidato` 
         FROM viewmovimenti 
-         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` IN (1))  AND YEAR(`viewmovimenti`.DataMovimento) = 2015  AND MONTH(`viewmovimenti`.DataMovimento) = 6 
+         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 15)  AND `viewmovimenti`.DataMovimento >= '2015-05-01'  AND `viewmovimenti`.DataMovimento <= '2015-09-30' 
         ORDER BY DataMovimento DESC, ID DESC 
 SELECT 
           `ID` 
@@ -55,7 +48,7 @@ SELECT
           ,`Transazione` 
           ,`Consolidato` 
         FROM viewmovimenti 
-         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` IN (1))  AND YEAR(`viewmovimenti`.DataMovimento) = 2015  AND MONTH(`viewmovimenti`.DataMovimento) = 5 
+         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 1)  AND `viewmovimenti`.DataMovimento >= '2015-09-01'  AND `viewmovimenti`.DataMovimento <= '2015-09-30' 
         ORDER BY DataMovimento DESC, ID DESC 
 SELECT 
           `ID` 
@@ -68,7 +61,7 @@ SELECT
           ,`Transazione` 
           ,`Consolidato` 
         FROM viewmovimenti 
-         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` IN (1))  AND YEAR(`viewmovimenti`.DataMovimento) = 2015  AND MONTH(`viewmovimenti`.DataMovimento) = 7 
+         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 1)  AND `viewmovimenti`.DataMovimento >= '2015-09-01'  AND `viewmovimenti`.DataMovimento <= '2015-09-30' 
         ORDER BY DataMovimento DESC, ID DESC 
 SELECT 
           `ID` 
@@ -81,7 +74,7 @@ SELECT
           ,`Transazione` 
           ,`Consolidato` 
         FROM viewmovimenti 
-         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` IN (1))  AND YEAR(`viewmovimenti`.DataMovimento) = 2015  AND MONTH(`viewmovimenti`.DataMovimento) = 8 
+         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 1)  AND `viewmovimenti`.DataMovimento >= '2015-09-01'  AND `viewmovimenti`.DataMovimento <= '2015-09-30' 
         ORDER BY DataMovimento DESC, ID DESC 
 SELECT 
           `ID` 
@@ -94,7 +87,7 @@ SELECT
           ,`Transazione` 
           ,`Consolidato` 
         FROM viewmovimenti 
-         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '+')   AND YEAR(`viewmovimenti`.DataMovimento) = 2015  AND MONTH(`viewmovimenti`.DataMovimento) = 9 
+         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 8)  AND `viewmovimenti`.DataMovimento >= '2015-05-01'  AND `viewmovimenti`.DataMovimento <= '2015-09-30' 
         ORDER BY DataMovimento DESC, ID DESC 
 SELECT 
           `ID` 
@@ -107,7 +100,7 @@ SELECT
           ,`Transazione` 
           ,`Consolidato` 
         FROM viewmovimenti 
-         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND YEAR(`viewmovimenti`.DataMovimento) = 2015  AND MONTH(`viewmovimenti`.DataMovimento) = 9 
+         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 2)  AND `viewmovimenti`.DataMovimento >= '2015-05-01'  AND `viewmovimenti`.DataMovimento <= '2015-09-30' 
         ORDER BY DataMovimento DESC, ID DESC 
 SELECT 
           `ID` 
@@ -120,7 +113,7 @@ SELECT
           ,`Transazione` 
           ,`Consolidato` 
         FROM viewmovimenti 
-         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND YEAR(`viewmovimenti`.DataMovimento) = 2015  AND MONTH(`viewmovimenti`.DataMovimento) = 8 
+         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 3)  AND `viewmovimenti`.DataMovimento >= '2015-05-01'  AND `viewmovimenti`.DataMovimento <= '2015-09-30' 
         ORDER BY DataMovimento DESC, ID DESC 
 SELECT 
           `ID` 
@@ -133,5 +126,5 @@ SELECT
           ,`Transazione` 
           ,`Consolidato` 
         FROM viewmovimenti 
-         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND YEAR(`viewmovimenti`.DataMovimento) = 2015  AND MONTH(`viewmovimenti`.DataMovimento) = 7 
+         WHERE 1=1 AND (ID_TRANSAZIONE IS NULL)  AND (`viewmovimenti`.`Segno` = '-')   AND (`viewmovimenti`.`ID_CAUSALE_MOVIMENTO` = 8)  AND `viewmovimenti`.DataMovimento >= '2015-05-01'  AND `viewmovimenti`.DataMovimento <= '2015-09-30' 
         ORDER BY DataMovimento DESC, ID DESC 

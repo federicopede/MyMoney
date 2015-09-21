@@ -1,0 +1,4 @@
+http://www.gianlucadivincenzo.it/php/web-service-soap-php-5_224/
+http://www.gianlucadivincenzo.it/soa/soap-simple-object-access-protocol_223/
+http://stackoverflow.com/questions/12490298/perfect-soap-wsdl-web-service-in-php
+http://www.html.it/articoli/web-service-soap-e-php-5/

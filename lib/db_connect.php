@@ -5,6 +5,8 @@
 	define("DATABASE", "moneydb"); // Nome del database.
 	$mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);
 	//$mysqli = mysqli_connect("localhost","root@localhost","","MoneyDB");
+	//sudo ./mysqldump -u root@localhost -p moneydb > moneydb_bck.sql
+
 	// Se ti stai connettendo usando il protocollo TCP/IP, invece di usare un socket UNIX, ricordati di aggiungere il parametro corrispondente al numero di porta.
 /*
 Username: admin

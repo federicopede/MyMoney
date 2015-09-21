@@ -129,7 +129,7 @@ mysql_select_db("MoneyDB",$link) or die ("Cannot select the database!");
 //" .$WHERE. " 
 $query1 = "select COUNT(*) from `moneydb`.`viewmovimenti` " .$WHERE. "";
       //logger('ciao details');
-      logger($query);
+      //logger($query);
        
 $result = mysql_query($query);
 $totalquery = mysql_query($query1);
