@@ -22,7 +22,8 @@ else {
     }
     else {
         echo "<h2>Books</h2><pre>";
-        echo $result; //->to_json();
+        echo $result[3]['descrizione'].'<br>';
+        print_r($result);
         echo "</pre>";
     }
 }
